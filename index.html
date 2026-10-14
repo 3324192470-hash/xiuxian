@@ -1,0 +1,3321 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>问道 · 修仙纪</title>
+<meta name="theme-color" content="#0c0f13">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<style>
+:root{
+  --bg:#0c0f13; --bg2:#12161c; --panel:#181d25; --panel2:#1f2631;
+  --line:#2c3644; --line2:#3a4658;
+  --gold:#d9b96a; --gold2:#f0d99a; --jade:#6ec8a4; --jade2:#9fe3c6;
+  --blood:#c05a5a; --purple:#9b7fd4; --azure:#6aa8d9;
+  --txt:#d6d0c4; --txt2:#9aa3b0; --txt3:#6b7482;
+  --ok:#6ec8a4; --warn:#d9a35a; --bad:#c05a5a;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{
+  background:
+    radial-gradient(1200px 600px at 50% -10%, #1a2330 0%, transparent 60%),
+    radial-gradient(800px 500px at 90% 110%, #1a2620 0%, transparent 55%),
+    var(--bg);
+  color:var(--txt);
+  font-family:"Noto Serif SC","Source Han Serif SC","Songti SC","SimSun",Georgia,serif;
+  font-size:15px; line-height:1.7; overflow:hidden;
+  -webkit-font-smoothing:antialiased;
+  overscroll-behavior:none;
+  -webkit-user-select:none;user-select:none;
+}
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:radial-gradient(rgba(255,255,255,.022) 1px,transparent 1px);
+  background-size:3px 3px;
+}
+button{font-family:inherit;font-size:inherit;color:inherit;background:none;border:none;cursor:pointer}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--line2);border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:var(--gold)}
+
+#app{position:relative;z-index:1;height:100%;height:100dvh;display:flex;flex-direction:column;max-width:1180px;margin:0 auto;padding:0 10px;padding-top:env(safe-area-inset-top);padding-left:max(10px,env(safe-area-inset-left));padding-right:max(10px,env(safe-area-inset-right))}
+
+/* ============ 顶栏 ============ */
+#topbar{padding:10px 4px 8px;border-bottom:1px solid var(--line);flex-shrink:0}
+.tb-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.tb-name{font-size:19px;color:var(--gold2);letter-spacing:2px;text-shadow:0 0 18px rgba(217,185,106,.35)}
+.tb-realm{font-size:13px;color:var(--jade2);border:1px solid var(--line2);padding:1px 9px;border-radius:3px;background:rgba(110,200,164,.07)}
+.tb-org{font-size:12px;color:var(--txt2)}
+.tb-spacer{flex:1}
+.tb-time{font-size:12px;color:var(--txt3)}
+.tb-new{margin-left:8px;padding:2px 9px;font-size:11px}
+.tb-attr{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--txt2);margin-top:5px}
+.tb-attr b{color:var(--txt);font-weight:400}
+.dao-xin-bar{display:inline-block;width:70px;height:5px;background:#2a2028;border-radius:3px;overflow:hidden;vertical-align:middle;margin-left:4px}
+.dao-xin-bar i{display:block;height:100%;background:linear-gradient(90deg,#c05a5a,#d9b96a,#6ec8a4);transition:width .4s}
+
+.xiuwei-wrap{margin-top:8px}
+.xiuwei-top{display:flex;justify-content:space-between;font-size:12px;color:var(--txt2);margin-bottom:3px}
+.xiuwei-top .num{color:var(--gold2);font-variant-numeric:tabular-nums}
+.bar{height:9px;background:#0a0d11;border:1px solid var(--line);border-radius:2px;overflow:hidden;position:relative}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,#5a7fa8,#6ec8a4);transition:width .35s;box-shadow:0 0 12px rgba(110,200,164,.5)}
+.bar.hp i{background:linear-gradient(90deg,#8a3a3a,#c05a5a);box-shadow:0 0 12px rgba(192,90,90,.4)}
+.bar.mp i{background:linear-gradient(90deg,#3a5a8a,#6aa8d9);box-shadow:0 0 12px rgba(106,168,217,.4)}
+.bar.xp i{background:linear-gradient(90deg,#8a7434,#d9b96a);box-shadow:0 0 12px rgba(217,185,106,.4)}
+
+/* ============ 主体 ============ */
+#main{flex:1;overflow-y:auto;overflow-x:hidden;padding:12px 4px 16px;scroll-behavior:smooth;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+.panel{background:linear-gradient(180deg,rgba(31,38,49,.85),rgba(24,29,37,.85));border:1px solid var(--line);border-radius:4px;padding:12px 14px;margin-bottom:10px}
+.panel-t{font-size:14px;color:var(--gold);letter-spacing:1px;margin-bottom:9px;padding-bottom:7px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:8px}
+.panel-t::before{content:"";width:3px;height:13px;background:var(--gold);border-radius:2px}
+.panel-t .sub{font-size:11px;color:var(--txt3);letter-spacing:0;margin-left:auto}
+.muted{color:var(--txt2);font-size:13px}
+.tiny{font-size:12px;color:var(--txt3)}
+.gold{color:var(--gold2)}.jade{color:var(--jade2)}.blood{color:var(--blood)}.pur{color:var(--purple)}.azure{color:var(--azure)}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:6px 14px;border:1px solid var(--line2);border-radius:3px;background:rgba(217,185,106,.06);color:var(--txt);font-size:13px;transition:.16s;white-space:nowrap}
+.btn:hover:not(:disabled){background:rgba(217,185,106,.16);border-color:var(--gold);color:var(--gold2);transform:translateY(-1px)}
+.btn:active:not(:disabled){transform:translateY(0)}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.btn.pri{background:rgba(217,185,106,.14);border-color:var(--gold);color:var(--gold2)}
+.btn.pri:hover:not(:disabled){background:rgba(217,185,106,.28);box-shadow:0 0 16px rgba(217,185,106,.25)}
+.btn.danger{background:rgba(192,90,90,.1);border-color:#6a3838;color:#e09090}
+.btn.danger:hover:not(:disabled){background:rgba(192,90,90,.22);border-color:var(--blood);color:#f0a8a8}
+.btn.sm{padding:3px 10px;font-size:12px}
+.btn.wide{width:100%}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap}
+
+.grid{display:grid;gap:10px}
+.g2{grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
+.g3{grid-template-columns:repeat(auto-fill,minmax(190px,1fr))}
+
+.card{background:rgba(12,15,19,.55);border:1px solid var(--line);border-radius:3px;padding:10px 12px;transition:.16s}
+.card:hover{border-color:var(--line2)}
+.card.sel{border-color:var(--gold);background:rgba(217,185,106,.08)}
+.card-t{font-size:14px;color:var(--gold2);margin-bottom:4px;display:flex;align-items:center;gap:6px}
+.card-d{font-size:12px;color:var(--txt2);line-height:1.6;min-height:2.6em}
+.card-a{margin-top:8px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.tag{display:inline-block;font-size:11px;padding:1px 7px;border:1px solid var(--line2);border-radius:2px;color:var(--txt2);background:rgba(255,255,255,.03)}
+.tag.g{border-color:#4a6a55;color:var(--jade2);background:rgba(110,200,164,.08)}
+.tag.y{border-color:#6a5a2a;color:var(--gold2);background:rgba(217,185,106,.08)}
+.tag.r{border-color:#6a3838;color:#e09090;background:rgba(192,90,90,.08)}
+.tag.p{border-color:#4a3a6a;color:#c0a8e8;background:rgba(155,127,212,.08)}
+.tag.b{border-color:#33506a;color:#9fc8e8;background:rgba(106,168,217,.08)}
+.q0{color:#b8b8b8}.q1{color:#7fd4a0}.q2{color:#6aa8d9}.q3{color:#b98fd4}.q4{color:#e0a85a}.q5{color:#e07a7a}
+
+.kv{display:flex;justify-content:space-between;gap:10px;font-size:13px;padding:3px 0;border-bottom:1px dashed rgba(58,70,88,.45)}
+.kv:last-child{border-bottom:none}
+.kv .k{color:var(--txt2)}
+.kv .v{color:var(--txt);font-variant-numeric:tabular-nums;text-align:right}
+.log{max-height:190px;overflow-y:auto;font-size:12.5px;line-height:1.85}
+.log div{padding:2px 0;border-bottom:1px dashed rgba(58,70,88,.3);color:var(--txt2)}
+.log div:last-child{border-bottom:none}
+.log .t{color:var(--txt3);margin-right:6px;font-size:11px}
+
+/* ============ 底部标签 ============ */
+#tabs{display:flex;gap:2px;border-top:1px solid var(--line);background:rgba(12,15,19,.9);flex-shrink:0;overflow-x:auto;padding-bottom:env(safe-area-inset-bottom)}
+.tab{flex:1;min-width:64px;padding:9px 4px 8px;text-align:center;font-size:12px;color:var(--txt3);border-top:2px solid transparent;transition:.16s;white-space:nowrap}
+.tab:hover{color:var(--txt);background:rgba(255,255,255,.03)}
+.tab.on{color:var(--gold2);border-top-color:var(--gold);background:rgba(217,185,106,.07)}
+.tab .ic{display:block;font-size:16px;line-height:1.3}
+.tab .dot{position:absolute;margin-left:-6px;margin-top:-2px;width:6px;height:6px;background:var(--blood);border-radius:50%}
+
+/* ============ 弹窗 ============ */
+#modal-layer{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(4,6,9,.78);backdrop-filter:blur(3px)}
+#modal-layer.on{display:flex}
+.modal{width:100%;max-width:560px;max-height:86vh;overflow-y:auto;background:linear-gradient(180deg,#1e242e,#161a21);border:1px solid var(--line2);border-radius:5px;box-shadow:0 24px 70px rgba(0,0,0,.75);animation:pop .22s ease-out}
+@keyframes pop{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:none}}
+.modal-h{padding:13px 16px;border-bottom:1px solid var(--line);font-size:16px;color:var(--gold2);letter-spacing:1px;display:flex;align-items:center;gap:8px}
+.modal-b{padding:14px 16px;font-size:14px;line-height:1.85}
+.modal-f{padding:11px 16px;border-top:1px solid var(--line);display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+.modal-b p{margin-bottom:9px}
+.modal-b .hl{color:var(--gold2)}
+.modal-b .quote{border-left:2px solid var(--line2);padding-left:10px;color:var(--txt2);font-style:italic;margin:8px 0}
+
+#toast-layer{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:90;display:flex;flex-direction:column;gap:6px;align-items:center;pointer-events:none;width:100%;max-width:520px;padding:0 12px}
+.toast{background:rgba(24,29,37,.96);border:1px solid var(--line2);border-left:3px solid var(--gold);border-radius:3px;padding:7px 14px;font-size:13px;color:var(--txt);box-shadow:0 8px 26px rgba(0,0,0,.6);animation:slide .3s ease-out;max-width:100%}
+.toast.g{border-left-color:var(--jade)}.toast.r{border-left-color:var(--blood)}.toast.p{border-left-color:var(--purple)}
+@keyframes slide{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:none}}
+
+/* ============ 战斗 ============ */
+.battle-stage{text-align:center;padding:6px 0 10px}
+.battle-vs{display:flex;align-items:center;justify-content:center;gap:14px;font-size:15px}
+.fighter{flex:1;max-width:190px}
+.fighter .av{font-size:34px;line-height:1.2}
+.fighter .nm{font-size:13px;margin:2px 0 5px}
+.fighter .bar{margin-bottom:3px}
+.fighter .hpn{font-size:11px;color:var(--txt3);font-variant-numeric:tabular-nums}
+.battle-log{height:150px;overflow-y:auto;background:rgba(8,10,13,.6);border:1px solid var(--line);border-radius:3px;padding:8px 10px;font-size:12.5px;line-height:1.8}
+.battle-log div{margin-bottom:2px}
+.battle-log .me{color:var(--jade2)}
+.battle-log .foe{color:#e09090}
+.battle-log .sys{color:var(--gold2)}
+.battle-log .dim{color:var(--txt3)}
+.dmg{animation:shake .3s}
+@keyframes shake{0%,100%{transform:none}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+
+/* ============ 其他 ============ */
+.hr{height:1px;background:var(--line);margin:11px 0}
+.center{text-align:center}
+.flex{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.right{margin-left:auto}
+.pill{font-size:11px;padding:2px 8px;border-radius:10px;border:1px solid var(--line2);color:var(--txt2)}
+.prog-mini{height:4px;background:#0a0d11;border-radius:2px;overflow:hidden;margin-top:5px}
+.prog-mini i{display:block;height:100%;background:var(--gold);transition:width .3s}
+.scroll-x{overflow-x:auto;white-space:nowrap;padding-bottom:4px}
+.scroll-x .chip{display:inline-block;margin-right:6px}
+.chip{padding:4px 11px;border:1px solid var(--line2);border-radius:14px;font-size:12.5px;color:var(--txt2);transition:.16s}
+.chip:hover{border-color:var(--gold);color:var(--gold2)}
+.chip.on{background:rgba(217,185,106,.15);border-color:var(--gold);color:var(--gold2)}
+.empty{text-align:center;color:var(--txt3);font-size:13px;padding:22px 0}
+@media(max-width:600px){
+  body{font-size:14px}
+  .tb-name{font-size:17px}
+  .tb-attr{gap:9px;font-size:11.5px}
+  #main{padding:10px 2px 14px}
+  .panel{padding:10px 11px}
+  .modal{max-height:90vh}
+}
+@media(max-width:768px){
+  /* 手机/小平板：放大可点击区域，避免误触 */
+  .btn{padding:9px 14px;font-size:14px}
+  .btn.sm{padding:7px 11px;font-size:13px}
+  .tab{padding:11px 4px 9px;font-size:12px}
+  .tab .ic{font-size:18px}
+  .tb-row{gap:7px}
+  .tb-new{margin-left:6px}
+}
+@media(max-width:600px){
+  /* 窄屏：底部标签栏可横向滚动，单行不挤压 */
+  #tabs{overflow-x:auto;justify-content:flex-start}
+  .tab{min-width:62px;flex:0 0 auto}
+  .tb-attr{font-size:11px;gap:7px}
+  /* 名称输入框放大到 ≥16px，避免 iOS 聚焦时自动放大 */
+  #nameInput,#importArea,.nameInput{font-size:16px !important}
+  .xiuwei-top{font-size:11px}
+  .kv{font-size:12.5px}
+  .grid.g2,.grid.g3{grid-template-columns:1fr}
+  .panel-t{font-size:13.5px}
+}
+/* 输入框允许文本选择（其余区域仍禁选，避免长按误选） */
+input,textarea{-webkit-user-select:text;user-select:text}
+input,textarea,select{font-size:16px}
+</style>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <link rel="mask-icon" href="assets/icon-512.png" color="#0c0f13">
+</head>
+<body>
+<div id="app">
+  <header id="topbar"></header>
+  <main id="main"></main>
+  <nav id="tabs"></nav>
+</div>
+<div id="modal-layer"></div>
+<div id="toast-layer"></div>
+<script>
+"use strict";
+/* ============================================================
+   问道 · 修仙纪   单文件修仙放置 RPG
+   ============================================================ */
+
+/* ---------- 小工具 ---------- */
+const $ = s => document.querySelector(s);
+const rnd = (a, b) => a + Math.random() * (b - a);
+const ri = (a, b) => Math.floor(rnd(a, b + 1));
+const pick = a => a[Math.floor(Math.random() * a.length)];
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const fmt = n => {
+  n = Math.floor(n);
+  if (n < 10000) return "" + n;
+  if (n < 1e8) return (n / 1e4).toFixed(n < 1e6 ? 2 : 1) + "万";
+  if (n < 1e12) return (n / 1e8).toFixed(2) + "亿";
+  return (n / 1e12).toFixed(2) + "兆";
+};
+const pct = n => (n * 100).toFixed(1) + "%";
+const nowSec = () => Math.floor(Date.now() / 1000);
+function hhmmss(s) {
+  s = Math.max(0, Math.floor(s));
+  const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), x = s % 60;
+  return (h > 0 ? h + "时" : "") + m + "分" + x + "秒";
+}
+/* 道历：统一按 365 日/年、12 月/年、30 日/月（年末 5 日为「岁余」）
+   全项目一致，不再使用 360 日/年的旧口径。 */
+function gameDate(t) {
+  const days = Math.max(0, Math.floor(t));
+  const Y = Math.floor(days / GAME_DAYS_PER_YEAR);
+  const rem = days % GAME_DAYS_PER_YEAR;
+  const M = Math.floor(rem / GAME_DAYS_PER_MONTH);
+  const D = rem % GAME_DAYS_PER_MONTH;
+  if (M >= 12) return `道历 ${Y} 年 岁余${D + 1}日`;
+  return `道历 ${Y} 年 ${M + 1} 月 ${D + 1} 日`;
+}
+/* 凡人阶段：显示「第 N 日」 */
+function mortalDate(t) {
+  return `第 ${Math.max(1, Math.floor(t) + 1)} 日`;
+}
+/* 游戏日 → 年份（用于成就与统计） */
+function gameYears(t) { return Math.floor(Math.max(0, t) / GAME_DAYS_PER_YEAR); }
+
+/* ============================================================
+   一、数据表
+   ============================================================ */
+
+/* --- 境界 ---
+   本原型范围：凡人 → 化神圆满（炼虚及以上不开放）。
+   每境界的小境界数由 levels 决定；炼气为 1~10 重，其余为 初期/中期/后期/圆满。
+   baseDurationSec = 该境界全部等级的目标总耗时（无任何加成，现实秒）。 */
+const SUB = ["初期", "中期", "后期", "圆满"];
+const CN_NUM = ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十"];
+const CHONG = CN_NUM.map(c => c + "重");
+
+const REALMS = [
+  { id: "qi",       name: "炼气", icon: "🌱", levels: 10, baseDurationSec: 900,     life: 100,  atk: 14,    def: 5,     hp: 100,  subNames: CHONG },
+  { id: "zhuji",    name: "筑基", icon: "🏔️", levels: 4,  baseDurationSec: 187918,  life: 180,  atk: 18,    def: 9,     hp: 200 },
+  { id: "jindan",   name: "金丹", icon: "🔆", levels: 4,  baseDurationSec: 451002,  life: 320,  atk: 55,    def: 28,    hp: 700 },
+  { id: "yuanying", name: "元婴", icon: "👶", levels: 4,  baseDurationSec: 1082406, life: 560,  atk: 170,   def: 85,    hp: 2400 },
+  { id: "huashen",  name: "化神", icon: "🌊", levels: 4,  baseDurationSec: 2597774, life: 950,  atk: 520,   def: 260,   hp: 8000 }
+];
+/* 本版本无仙界，全部境界皆属人界；化神圆满即阶段终点 */
+const HUMAN_REALMS = REALMS.length;
+
+/* ---- 索引换算：全局 realmIdx 是「大境界×N + 小境界」的扁平编号 ---- */
+const REALM_SUBS = REALMS.map(r => r.levels);
+const REALM_START = (() => { let acc = 0; return REALMS.map((r, i) => { const s = acc; acc += REALM_SUBS[i]; return s; }); })();
+const MAX_INDEX = REALM_START[REALMS.length - 1] + REALM_SUBS[REALMS.length - 1] - 1;
+function realmMajor(idx) {
+  idx = clamp(Math.floor(idx), 0, MAX_INDEX);
+  for (let i = REALMS.length - 1; i >= 0; i--) if (idx >= REALM_START[i]) return i;
+  return 0;
+}
+function realmSub(idx) { return clamp(Math.floor(idx), 0, MAX_INDEX) - REALM_START[realmMajor(idx)]; }
+function realmSubs(m) { return REALM_SUBS[clamp(m, 0, REALMS.length - 1)]; }
+/* 大境界 m 的首个 / 末个全局索引；也用于把「第几大境界」门槛换算成索引 */
+function majorStart(m) { return REALM_START[clamp(m, 0, REALMS.length - 1)]; }
+function majorEnd(m) { return REALM_START[clamp(m, 0, REALMS.length - 1)] + realmSubs(m) - 1; }
+function realmSubName(m, sub) {
+  const r = REALMS[m];
+  if (r.subNames) return r.subNames[clamp(sub, 0, r.subNames.length - 1)];
+  return SUB[clamp(sub, 0, 3)];
+}
+function realmInfo(idx) {
+  const m = realmMajor(idx), sub = realmSub(idx), r = REALMS[m];
+  return { r, m, s: sub, n: realmSubs(m), name: r.name + realmSubName(m, sub), icon: r.icon, index: idx };
+}
+
+/* ============================================================
+   修为曲线（单一数据源）
+   ------------------------------------------------------------
+   设计约束（见设计文档 §1.4）：
+   1) baseDurationSec 表示无加成时该境界全部等级的目标总耗时；
+   2) needXiuwei() 只算「当前等级所需修为」；
+   3) getCultivationRate() 只算「每秒修为增长」；
+   4) realSecPerLevel() = needXiuwei / baseCultivationRate，不得另维护一份耗时表；
+   5) BREAK_BONUS 是设计目标，不得靠改某个境界的基础需求来掩盖公式错误。
+   ============================================================ */
+const BASE_RATIO = 6;      /* 大境界基础需求倍率 */
+const SPEED_GROWTH = 0.72; /* 本境界内速度增长 */
+const BREAK_BONUS = 2.2;   /* 大境界突破后速度跳升 */
+
+/* 预计算：每境界每等级的「基准需求」与「基准耗时」。
+   本境界内第 k 级权重 w(k) = R^k / (1 + SPEED_GROWTH·k/n)，
+   其中 R = BASE_RATIO^(1/n)。需求涨得快、速度涨得慢 → 耗时逐级递增。 */
+const CURVE = (() => {
+  const rows = [];
+  let prevEndRate = 0;
+  REALMS.forEach((r, m) => {
+    const n = r.levels;
+    const R = Math.pow(BASE_RATIO, 1 / n);
+    const w = [];
+    let S = 0;
+    for (let k = 0; k < n; k++) { w[k] = Math.pow(R, k) / (1 + SPEED_GROWTH * k / n); S += w[k]; }
+    const targetSec = k => r.baseDurationSec * w[k] / S;
+    /* 首级需求：炼气锚定 100；其余由「上境末速 × BREAK_BONUS」反推 */
+    const need0 = (m === 0) ? 100 : prevEndRate * BREAK_BONUS * targetSec(0);
+    const needs = k => need0 * Math.pow(R, k);
+    const endRate = needs(n - 1) / targetSec(n - 1);
+    rows.push({ m, n, R, w, S, need0, targetSec, needs, endRate });
+    prevEndRate = endRate;
+  });
+  return rows;
+})();
+
+/* 当前等级所需修为 */
+function needXiuwei(idx) {
+  const m = realmMajor(idx), sub = realmSub(idx);
+  return Math.floor(CURVE[m].needs(sub));
+}
+/* 基准修炼速度（修为 / 现实秒，无任何加成） */
+function baseCultivationRate(idx) {
+  const m = realmMajor(idx), sub = realmSub(idx);
+  return CURVE[m].needs(sub) / CURVE[m].targetSec(sub);
+}
+/* 该等级耗时 = 需求 / 基准速度（派生量，不单独维护） */
+function realSecPerLevel(idx) {
+  return needXiuwei(idx) / baseCultivationRate(idx);
+}
+/* 该大境界的目标总耗时（校验用） */
+function realmTargetSec(m) { return REALMS[clamp(m, 0, REALMS.length - 1)].baseDurationSec; }
+function realmLife(idx) {
+  const m = realmMajor(idx), n = realmSubs(m);
+  return Math.floor(REALMS[m].life * (1 + (realmSub(idx) / n)));
+}
+
+/* --- 灵根 --- */
+const ROOTS = [
+  { id: "wu", name: "五行杂灵根", mul: 1.0, desc: "五气驳杂，修行缓慢，然兼容万象。", tag: "q0" },
+  { id: "shuang", name: "双灵根", mul: 1.6, desc: "两系同修，进境颇快。", tag: "q1" },
+  { id: "tian", name: "天灵根", mul: 2.6, desc: "一系纯粹，百年难遇的良才。", tag: "q2" },
+  { id: "lei", name: "雷灵根", mul: 3.2, desc: "天生雷体，攻伐无双，渡劫时更易引雷。", tag: "q3" },
+  { id: "bing", name: "冰灵根", mul: 2.9, desc: "心如寒潭，道心极稳，突破失败率大减。", tag: "q3" },
+  { id: "jian", name: "剑灵根", mul: 3.0, desc: "生而知剑，战力远超同阶。", tag: "q3" },
+  { id: "hundun", name: "混沌灵根", mul: 4.2, desc: "万载不出的传说体质，天道亦为之侧目。", tag: "q4" }
+];
+const ROOT_RAND = [
+  { id: "wu", w: 40 }, { id: "shuang", w: 30 }, { id: "tian", w: 14 },
+  { id: "lei", w: 6 }, { id: "bing", w: 6 }, { id: "jian", w: 3 }, { id: "hundun", w: 1 }
+];
+
+/* --- 出身（开局三选一） --- */
+const ORIGINS = [
+  {
+    id: "fei", name: "废灵根重启", icon: "🪨",
+    desc: "你曾是青阳城最耀眼的天才，十二岁筑基，惊动一州。十六岁那年，一场雷雨，你灵根尽碎，成了人人口中的废人。",
+    perk: "道心 +20，修炼速度 +10%，突破成功率 +5%",
+    apply: s => { s.daoXin += 20; s.bonus.rate += 0.10; s.bonus.breakRate += 0.05; },
+    start: { realm: 0, money: 30 }
+  },
+  {
+    id: "mie", name: "灭门遗孤", icon: "🩸",
+    desc: "你记不清那夜的火。只记得父亲把你塞进枯井时，说的最后一句话：「活下去，别回头。」你活下来了，回头了。",
+    perk: "攻击 +15%，历练收益 +20%，声望 -10（来历不明）",
+    apply: s => { s.bonus.atk += 0.15; s.bonus.expGain += 0.20; s.reputation -= 10; },
+    start: { realm: 0, money: 10 }
+  },
+  {
+    id: "san", name: "散修游侠", icon: "🍃",
+    desc: "没人教你，你就趴在墙头偷看别人打坐。十六年，你走遍七州，学会了一身杂而不精的本事，还有一身不怕死的胆子。",
+    perk: "气运 +15，灵石 +200，坊市价格 -10%",
+    apply: s => { s.luck += 15; s.bonus.shopCost -= 0.10; },
+    start: { realm: 0, money: 200 }
+  }
+];
+
+/* --- 宗门 --- */
+const SECTS = [
+  {
+    id: "qingyun", name: "青云剑宗", icon: "⚔️", joinAt: 0,
+    desc: "青州第一剑宗，剑意冲霄。门规森严，却也最重情义。",
+    bonus: { atk: 0.12 }, bonusTxt: "攻击 +12%",
+    art: "jinfeng"
+  },
+  {
+    id: "danxia", name: "丹霞谷", icon: "⚗️", joinAt: 1,
+    desc: "天下丹药半出丹霞。谷中人不擅争斗，却人人富得流油。",
+    bonus: { alchemy: 0.35, money: 0.15 }, bonusTxt: "炼丹成功率 +35%，灵石收益 +15%",
+    art: "jindan"
+  },
+  {
+    id: "tianmo", name: "天魔宗", icon: "😈", joinAt: 2,
+    desc: "北荒魔道魁首，以杀证道。入此门者，再无回头路。",
+    bonus: { atk: 0.30, def: -0.10 }, bonusTxt: "攻击 +30%，防御 -10%",
+    art: "xuemo"
+  },
+  {
+    id: "taixu", name: "太虚仙宗", icon: "☯️", joinAt: 4,
+    desc: "仙界在人界的道统传承，收徒极严。传闻其山门之后，便是通仙之路。",
+    bonus: { rate: 0.25, breakRate: 0.10 }, bonusTxt: "修炼速度 +25%，突破成功率 +10%",
+    art: "taixu_dao"
+  }
+];
+const SECT_RANKS = ["外门弟子", "内门弟子", "真传弟子", "核心弟子", "长老", "太上长老"];
+const SECT_CONTRIB = [0, 100, 400, 1500, 6000, 24000];
+
+/* --- 功法（27 门；字段模型见 DESIGN-mortal.md §1.4.3）---
+   type: heart=心法 / body=炼体 / skill=战技 / move=身法
+   revealAt: 大境界序号（0=炼气…4=化神），达此显形可获取
+   channel: §1.4.2 ART_CHANNEL（sect/shop/encounter/quest/event/alchemy/cave/boss/explore/lover/pet/achieve）
+   cost: 获取消耗 { contrib:N } 宗门贡献 / { spirit:N } 灵石 / 0 或无 = 条件/自动授予
+   effects: cultivationRate 只进修炼速度槽；其余各占其槽（hp/atk/def/crit/breakRate/luck/pillDaily/mp/alchemy/dodge/lifesteal）
+   condition: 非 sect/shop 渠道的获取前置（由对应系统授予时校验） */
+const ARTS = [
+  /* —— 炼气期（revealAt 0） —— */
+  { id: "yinqi_can", name: "引气诀·残篇", icon: "🌬️", tier: 0, type: "heart", revealAt: 0, channel: "encounter", cost: 0,
+    effects: { cultivationRate: 0 }, desc: "遇仙所得残卷，根基未全，仅作引路。" },
+  { id: "yinqi", name: "引气诀（全篇）", icon: "🌬️", tier: 1, type: "heart", revealAt: 0, channel: "sect", cost: { contrib: 60 },
+    effects: { cultivationRate: 0.03, breakRate: 0.02 }, desc: "青云基础引气法，全篇方见其效。" },
+  { id: "guixi", name: "龟息功", icon: "🐢", tier: 1, type: "heart", revealAt: 0, channel: "sect", cost: { contrib: 80 },
+    effects: { cultivationRate: 0.02, hp: 0.15 }, desc: "龟息百年，不争不抢，极养身。" },
+  { id: "tuna", name: "吐纳法", icon: "🍃", tier: 1, type: "heart", revealAt: 0, channel: "shop", cost: { spirit: 500 },
+    effects: { cultivationRate: 0.01, pillDaily: 1 }, desc: "吐纳调息，兼助丹道。" },
+  { id: "tiebu", name: "铁布衫", icon: "🛡️", tier: 1, type: "body", revealAt: 0, channel: "shop", cost: { spirit: 800 },
+    effects: { hp: 0.10, def: 0.10 }, desc: "横练之躯，硬抗刀兵。" },
+  { id: "lieyan", name: "烈焰掌", icon: "🔥", tier: 1, type: "skill", revealAt: 0, channel: "shop", cost: { spirit: 900 },
+    effects: { atk: 0.12, crit: 0.03 }, desc: "掌出如炎，灼尽前路荆棘。" },
+
+  /* —— 筑基期（revealAt 1） —— */
+  { id: "ningyuan", name: "凝元诀", icon: "☯️", tier: 2, type: "heart", revealAt: 1, channel: "sect", cost: { contrib: 200 },
+    effects: { cultivationRate: 0.03, pillDaily: 1 }, desc: "凝元固本，丹息渐厚。" },
+  { id: "wuqin", name: "五禽戏", icon: "🐯", tier: 2, type: "body", revealAt: 1, channel: "cave", cost: 0, condition: { caveLingzhen: 5 },
+    effects: { cultivationRate: 0.02, hp: 0.10 }, desc: "仿五禽之戏，炼体调息。需聚灵阵 Lv5。" },
+  { id: "qingxin", name: "清心咒", icon: "🧘", tier: 2, type: "heart", revealAt: 1, channel: "lover", cost: 0, condition: { loverFav: 100 },
+    effects: { cultivationRate: 0.02, breakRate: 0.03 }, desc: "心如止水，道侣情深可授。需好感≥100。" },
+  { id: "yufeng", name: "御风术", icon: "💨", tier: 2, type: "move", revealAt: 1, channel: "explore", cost: 0, condition: { zoneFights: 30 },
+    effects: { dodge: 0.08 }, desc: "御风而行，迷雾森林历练三十场可悟。" },
+  { id: "jinfeng", name: "金锋剑诀", icon: "🗡️", tier: 2, type: "skill", revealAt: 1, channel: "sect", cost: { contrib: 400 },
+    effects: { atk: 0.18, crit: 0.05 }, desc: "青云剑宗真传剑诀。" },
+
+  /* —— 金丹期（revealAt 2） —— */
+  { id: "jindan", name: "金丹要略", icon: "📖", tier: 3, type: "heart", revealAt: 2, channel: "sect", cost: { contrib: 500 },
+    effects: { cultivationRate: 0.04, pillDaily: 1 }, desc: "金丹凝练之要义。" },
+  { id: "dihuo", name: "地火功", icon: "🔥", tier: 3, type: "heart", revealAt: 2, channel: "alchemy", cost: 0, condition: { alchemyOk: 50 },
+    effects: { cultivationRate: 0.03, alchemy: 0.20 }, desc: "引地火炼丹，需累计炼丹成功 50 次。" },
+  { id: "xuanbing", name: "玄冰诀", icon: "❄️", tier: 3, type: "heart", revealAt: 2, channel: "explore", cost: 0, condition: { zoneFights: 50 },
+    effects: { cultivationRate: 0.03, atk: 0.10 }, desc: "玄冰真气，寒潭沼泽历练五十场可悟。" },
+  { id: "yanghun", name: "养魂术", icon: "🔮", tier: 3, type: "heart", revealAt: 2, channel: "event", cost: 0,
+    effects: { cultivationRate: 0.02, mp: 0.20, pillDaily: 1 }, desc: "养魂益神，奇遇偶得。" },
+  { id: "pojun", name: "破军拳", icon: "👊", tier: 3, type: "skill", revealAt: 2, channel: "boss", cost: 0, condition: { boss: "yan" },
+    effects: { atk: 0.20, crit: 0.06 }, desc: "破军拳法，击败「熔岩魔君」可习。" },
+  /* pojun/zhutian 的 condition.boss 用真实首领 id：yan=烈焰熔岩窟魔君，mo=北荒魔渊之主 */
+  { id: "wuxing", name: "五行遁法", icon: "🌊", tier: 3, type: "move", revealAt: 2, channel: "sect", cost: { contrib: 700 },
+    effects: { dodge: 0.10 }, desc: "五行之内，无处不可去。宗门贡献可换。" },
+
+  /* —— 元婴期（revealAt 3） —— */
+  { id: "yuanying", name: "元婴真解", icon: "📿", tier: 4, type: "heart", revealAt: 3, channel: "sect", cost: { contrib: 1600 },
+    effects: { cultivationRate: 0.04, breakRate: 0.03 }, desc: "元婴凝练之真解。" },
+  { id: "dayan", name: "大衍神术", icon: "🎲", tier: 4, type: "heart", revealAt: 3, channel: "cave", cost: 0, condition: { caveDantian: 20 },
+    effects: { cultivationRate: 0.03, crit: 0.05, pillDaily: 1 }, desc: "大衍神算，需丹房 Lv20。" },
+  { id: "xuemo", name: "血魔功", icon: "😈", tier: 4, type: "heart", revealAt: 3, channel: "event", cost: 0, condition: { daoXinLt: 40 },
+    effects: { cultivationRate: 0.04, atk: 0.30, lifesteal: 0.08, def: -0.05 }, desc: "以血养功，道心<40 时魔道奇遇可授。" },
+  { id: "xingchen", name: "星辰诀", icon: "⭐", tier: 4, type: "heart", revealAt: 3, channel: "pet", cost: 0, condition: { pet: "long" },
+    effects: { cultivationRate: 0.03, luck: 10 }, desc: "引星辰之力，需拥有灵宠「螭龙」。" },
+  { id: "hanbing", name: "寒冰真气", icon: "❄️", tier: 4, type: "skill", revealAt: 3, channel: "shop", cost: { spirit: 50000 },
+    effects: { atk: 0.20, crit: 0.08 }, desc: "真气化寒，冻人神魂。" },
+
+  /* —— 化神期（revealAt 4） —— */
+  { id: "huashen", name: "化神心经", icon: "🌊", tier: 4, type: "heart", revealAt: 4, channel: "sect", cost: { contrib: 6000 },
+    effects: { cultivationRate: 0.05, breakRate: 0.05 }, desc: "化神之心的根本经义。" },
+  { id: "taixu_dao", name: "太虚道经", icon: "☯️", tier: 4, type: "heart", revealAt: 4, channel: "sect", cost: 0,
+    effects: { cultivationRate: 0.04, breakRate: 0.05, mp: 0.20 }, desc: "太虚仙宗根本经义，直指大道（宗主亲传）。" },
+  { id: "jiuzhuan", name: "九转玄功", icon: "🌀", tier: 4, type: "body", revealAt: 4, channel: "achieve", cost: 0, condition: { achievements: 15 },
+    effects: { cultivationRate: 0.04, hp: 0.30, def: 0.20 }, desc: "一转一重天，九转证大道。解锁 15 项成就可习。" },
+  { id: "wanfa", name: "万法归宗", icon: "📚", tier: 4, type: "heart", revealAt: 4, channel: "achieve", cost: 0, condition: { ownedArts: 12 },
+    effects: { cultivationRate: 0.06, atk: 0.10, def: 0.10, hp: 0.10, pillDaily: 2 }, desc: "万法归宗，全属性小成。习得 12 门功法可悟。" },
+  { id: "zhutian", name: "诛天剑意", icon: "🔱", tier: 4, type: "skill", revealAt: 4, channel: "boss", cost: 0, condition: { boss: "mo" },
+    effects: { atk: 0.80, crit: 0.18 }, desc: "剑意所指，连天亦可诛。击败「魔渊之主」可习。" }
+];
+const ART_TYPE_CN = { heart: "心法", body: "炼体", skill: "战技", move: "身法" };
+const ART_CHANNEL_CN = { sect: "宗门", shop: "坊市", encounter: "遇仙", quest: "任务", event: "奇遇", alchemy: "炼丹", cave: "洞府", boss: "首领", explore: "历练", lover: "道侣", pet: "灵宠", achieve: "成就", collect: "集齐" };
+const TIER_NAME = ["凡阶", "黄阶", "玄阶", "地阶", "天阶"];
+const TIER_CLS = ["q0", "q1", "q2", "q3", "q4"];
+
+/* --- 装备 --- */
+const SLOTS = [
+  { id: "weapon", name: "兵器", icon: "🗡️" },
+  { id: "armor", name: "护甲", icon: "🥋" },
+  { id: "trinket", name: "法宝", icon: "🔮" },
+  { id: "boots", name: "灵靴", icon: "👢" }
+];
+const EQUIP_BASE = {
+  weapon: [
+    { n: "凡铁剑", a: 5 }, { n: "青锋剑", a: 14 }, { n: "流云剑", a: 38 }, { n: "赤霄剑", a: 105 },
+    { n: "紫电剑", a: 290 }, { n: "寒渊剑", a: 800 }, { n: "斩星剑", a: 2200 }, { n: "诛仙剑", a: 6200 },
+    { n: "鸿蒙剑", a: 17000 }
+  ],
+  armor: [
+    { n: "粗布道袍", a: 3 }, { n: "铁叶甲", a: 9 }, { n: "玄龟甲", a: 25 }, { n: "赤鳞甲", a: 70 },
+    { n: "紫云甲", a: 195 }, { n: "寒晶甲", a: 540 }, { n: "星陨甲", a: 1500 }, { n: "仙灵甲", a: 4200 },
+    { n: "混沌甲", a: 11500 }
+  ],
+  trinket: [
+    { n: "聚气玉佩", a: 4 }, { n: "凝神珠", a: 11 }, { n: "五行环", a: 30 }, { n: "朱雀印", a: 84 },
+    { n: "紫府令", a: 235 }, { n: "冰魄铃", a: 650 }, { n: "星辰盘", a: 1800 }, { n: "仙音琴", a: 5000 },
+    { n: "造化玉牒", a: 14000 }
+  ],
+  boots: [
+    { n: "草鞋", a: 3 }, { n: "疾风靴", a: 8 }, { n: "踏云履", a: 22 }, { n: "火麟靴", a: 62 },
+    { n: "紫霞履", a: 172 }, { n: "玄冰靴", a: 480 }, { n: "流星靴", a: 1330 }, { n: "仙踪履", a: 3700 },
+    { n: "虚空履", a: 10200 }
+  ]
+};
+const EQUIP_SUFFIX = [
+  { s: "·凡品", m: 1.0, t: 0 }, { s: "·良品", m: 1.35, t: 1 }, { s: "·上品", m: 1.8, t: 2 },
+  { s: "·极品", m: 2.4, t: 3 }, { s: "·灵宝", m: 3.2, t: 4 }, { s: "·仙器", m: 4.3, t: 5 }
+];
+const EQUIP_STAT = [
+  { k: "atk", n: "攻击", w: 30 }, { k: "def", n: "防御", w: 25 }, { k: "hp", n: "气血", w: 25 },
+  { k: "crit", n: "暴击", w: 8, isPct: true }, { k: "dodge", n: "闪避", w: 7, isPct: true },
+  { k: "lifesteal", n: "吸血", w: 5, isPct: true }
+];
+
+/* --- 丹药 --- */
+const PILLS = [
+  { id: "huiqi", name: "回气丹", icon: "🔵", tier: 1, price: 20, desc: "战斗中使用，回复 30% 气血。", battle: "heal", val: 0.30 },
+  { id: "juling", name: "聚灵丹", icon: "🟢", tier: 1, price: 60, desc: "服用后 240 日内（约 2 分钟）修炼速度 +100%。", buff: { rate: 1.0, dur: 240 } },
+  { id: "poqiao", name: "破窍丹", icon: "🟡", tier: 2, price: 260, desc: "突破时服用，成功率 +20%。", breakAdd: 0.20 },
+  { id: "xisui", name: "洗髓丹", icon: "🟣", tier: 2, price: 500, desc: "永久提升气血上限 5%（可叠加，上限 +100%）。", perm: { hp: 0.05, cap: 1.0 } },
+  { id: "wuxin", name: "悟心丹", icon: "🔴", tier: 3, price: 1200, desc: "永久提升修炼速度 3%（可叠加，上限 +60%）。", perm: { rate: 0.03, cap: 0.6 } },
+  { id: "jiuzhuan_dan", name: "九转还魂丹", icon: "⚪", tier: 4, price: 6000, desc: "战斗中濒死时自动满血复活一次。", revive: true },
+  { id: "tiandao", name: "天道丹", icon: "🌟", tier: 4, price: 20000, desc: "突破时服用，成功率 +50%，且失败不掉境界。", breakAdd: 0.50, noDrop: true }
+];
+
+/* --- 灵宠 --- */
+const PETS = [
+  { id: "huo", name: "火灵狐", icon: "🦊", cost: 800, desc: "生于火山口的小狐，性烈。",
+    stat: { atk: 0.10 }, grow: { atk: 0.012 }, skill: "焚身一击：战斗中每 5 回合造成 200% 攻击伤害。" },
+  { id: "xuan", name: "玄龟", icon: "🐢", cost: 1200, desc: "寿元万载，壳坚不可摧。",
+    stat: { def: 0.15, hp: 0.10 }, grow: { def: 0.015, hp: 0.012 }, skill: "龟甲护体：受到的伤害降低 15%。" },
+  { id: "lei", name: "雷鹏", icon: "🦅", cost: 3500, desc: "振翅间雷鸣电闪，天生杀伐之兽。",
+    stat: { atk: 0.18, crit: 0.05 }, grow: { atk: 0.02, crit: 0.004 }, skill: "雷击：每 4 回合追加一次 150% 攻击伤害。" },
+  { id: "jiu", name: "九尾天狐", icon: "🦊", cost: 15000, desc: "妖族皇裔，魅惑众生，亦通天道。",
+    stat: { luck: 20 }, grow: { luck: 1 }, skill: "天狐幻境：战斗开始时使敌人攻击降低 20%。" },
+  { id: "long", name: "螭龙", icon: "🐉", cost: 60000, desc: "真龙血脉，虽只一角，已足以镇山河。",
+    stat: { atk: 0.30, def: 0.20, hp: 0.20 }, grow: { atk: 0.03, def: 0.02, hp: 0.02 }, skill: "龙威：每 3 回合造成 300% 攻击伤害并回复自身 10% 气血。" }
+];
+
+/* --- 道侣 --- */
+const LOVERS = [
+  {
+    id: "shijie", name: "苏清月", title: "冷面剑修师姐", icon: "🗡️", meet: 0,
+    desc: "青云剑宗内门首席。初见时她只说了一句：「握剑的手，不该抖。」",
+    gifts: ["jinfeng", "hanbing", "zhutian"],
+    lines: [
+      "「你的剑，比上次稳了。」她别过头，耳尖微红。",
+      "「若有一日你走火入魔，我会亲手了结你。」她说得很轻。",
+      "「我这一生只信两样东西：剑，和你。」"
+    ]
+  },
+  {
+    id: "danya", name: "白芷", title: "丹道天才少女", icon: "⚗️", meet: 1,
+    desc: "丹霞谷谷主关门弟子，十四岁炼出三品丹，笑起来有两颗小虎牙。",
+    gifts: ["xisui", "wuxin", "poqiao"],
+    lines: [
+      "「这颗丹药……是我偷偷给你留的，别告诉师父。」",
+      "「你身上的伤，我都记得。每一道。」",
+      "「我炼了一辈子的药，唯独治不好想你的病。」"
+    ]
+  },
+  {
+    id: "huxian", name: "青丘·白霜", title: "妖族狐仙", icon: "🦊", meet: 2,
+    desc: "青丘山下来的九尾狐，笑起来眼角弯弯，谁也看不透她在想什么。",
+    gifts: ["jiu", "wuxing", "hanbing"],
+    lines: [
+      "「人族修士啊……你身上有股很好闻的味道。」",
+      "「我活了三千年，头一回觉得，三千年太长了。」",
+      "「若我为你弃了这身狐骨，你可愿带我走？」"
+    ]
+  },
+  {
+    id: "monv", name: "夜无殇", title: "魔道叛逃者", icon: "😈", meet: 3,
+    desc: "原天魔宗圣女，杀师叛宗，一身血债。她说：「我不是好人，但我不骗人。」",
+    gifts: ["xuemo", "jiuzhuan", "zhutian"],
+    lines: [
+      "「别用那种眼神看我。我杀的人，都该死。」",
+      "「你是我唯一没杀成的目标。真奇怪。」",
+      "「若这世上只剩一个人肯信我，我希望是你。」"
+    ]
+  }
+];
+const GIFT_ITEMS = [
+  { id: "linghua", name: "灵花", icon: "🌸", cost: 100, fav: 4, desc: "山间野花，聊表心意。" },
+  { id: "yuzan", name: "玉簪", icon: "🪮", cost: 800, fav: 12, desc: "温润白玉，亲手所制。" },
+  { id: "zhuji", name: "驻颜珠", icon: "⚪", cost: 5000, fav: 25, desc: "可保容颜不老，女子最爱。" },
+  { id: "dingqing", name: "定情信物", icon: "💞", cost: 30000, fav: 50, desc: "一生只赠一人。" }
+];
+const FAV_STAGE = [
+  { v: 0, n: "陌路" }, { v: 20, n: "相识" }, { v: 50, n: "相知" },
+  { v: 100, n: "倾心" }, { v: 200, n: "道侣" }, { v: 400, n: "生死相随" }
+];
+function favName(v) { let r = "陌路"; FAV_STAGE.forEach(s => { if (v >= s.v) r = s.n; }); return r; }
+
+/* --- 妖兽 --- */
+const MONSTERS = [
+  { n: "灰毛野兔", i: "🐇", lv: 0 }, { n: "青皮野猪", i: "🐗", lv: 0 }, { n: "山魈", i: "🐒", lv: 1 },
+  { n: "铁背苍狼", i: "🐺", lv: 1 }, { n: "毒尾蜈蚣", i: "🐛", lv: 2 }, { n: "赤睛蝙蝠", i: "🦇", lv: 2 },
+  { n: "石甲蜥", i: "🦎", lv: 3 }, { n: "黑风豹", i: "🐆", lv: 3 }, { n: "噬魂蛛", i: "🕷️", lv: 4 },
+  { n: "碧水蛟", i: "🐍", lv: 5 }, { n: "赤炎虎", i: "🐅", lv: 6 }, { n: "玄冰熊", i: "🐻‍❄️", lv: 7 },
+  { n: "雷纹鹰", i: "🦅", lv: 8 }, { n: "九幽鬼将", i: "👻", lv: 9 }, { n: "魔化修士", i: "🧟", lv: 10 },
+  { n: "域外魔卒", i: "👹", lv: 11 }, { n: "血海魔尊", i: "🩸", lv: 12 }, { n: "虚空魔影", i: "🌑", lv: 13 }
+];
+/* 怪物强度：
+   1) 大境界 = min(区域难度, 玩家大境界)，新手不会误撞高境界怪；
+   2) 小境界跟随玩家当前小境界（±1），保证"打得动但有点压力"。
+      若全范围随机，炼气一重会撞上炼气九重的怪，直接打不过。 */
+function makeMonster(zoneTier, name, icon, playerIdx) {
+  const pIdx = playerIdx === undefined ? 0 : playerIdx;
+  const pm = realmMajor(pIdx), psub = realmSub(pIdx);
+  const monMajor = clamp(Math.min(clamp(zoneTier, 0, 13), pm), 0, REALMS.length - 1);
+  const r = REALMS[monMajor];
+  const n = realmSubs(monMajor);
+  const monSub = clamp(psub + ri(-1, 1), 0, n - 1);
+  const subMul = 1 + (monSub / n) * 0.72;
+  /* 玩家高于该区域时怪物进一步弱化，让"回头刷低区"更轻松 */
+  const over = pm - monMajor;
+  const scale = over <= 0 ? 1.0 : Math.pow(0.62, over);
+  return {
+    name, icon, tier: zoneTier, sub: monSub,
+    hpMax: Math.max(1, Math.floor(r.hp * subMul * scale)), hp: 0,
+    atk: Math.max(1, Math.floor(r.atk * subMul * 0.8 * scale)),
+    def: Math.max(0, Math.floor(r.def * subMul * 0.75 * scale)),
+    crit: 0.05, dodge: 0.03
+  };
+}
+/* 首领战可行性估算：用于自动模式避免反复送死（失败会掉境界，代价很重） */
+function estimateWinChance(s, foe) {
+  const st = calcStats(s);
+  const myDps = Math.max(1, st.atk * (1 - foe.def / (foe.def + st.atk * 2.6)));
+  const roundsToKill = foe.hpMax / myDps;
+  const foeDps = Math.max(1, foe.atk * (1 - st.def / (st.def + foe.atk * 2.6)));
+  const myRounds = st.hpMax / foeDps;
+  if (roundsToKill < myRounds) return 1;                 /* 能在被打死前杀掉 */
+  return clamp(myRounds / roundsToKill, 0, 1);
+}
+
+/* --- 地图区域（本版本止于化神，故 req 最大为 4） --- */
+const ZONES = [
+  { id: "qingshi", name: "青石镇", icon: "🏘️", tier: 0, req: 0, desc: "你出生的小镇，镇口有棵歪脖子老槐树。", drop: 1.0, boss: { n: "山匪头目", i: "🪓" } },
+  { id: "hou", name: "青石镇后山", icon: "⛰️", tier: 1, req: 0, desc: "野兔与野猪出没，猎户们常来的地方。", drop: 1.1, boss: { n: "百年野猪王", i: "🐗" } },
+  { id: "lin", name: "迷雾森林", icon: "🌲", tier: 2, req: 1, desc: "终年浓雾不散，进去的人常走不出来。", drop: 1.2, boss: { n: "千年树妖", i: "🌳" } },
+  { id: "zhao", name: "寒潭沼泽", icon: "🌫️", tier: 3, req: 2, desc: "潭水冰寒刺骨，水下似有巨物游弋。", drop: 1.3, boss: { n: "寒潭蛟龙", i: "🐉" } },
+  { id: "huang", name: "黄沙古战场", icon: "🏜️", tier: 4, req: 3, desc: "上古修士大战之地，残兵断刃半埋沙中。", drop: 1.45, boss: { n: "不灭战魂", i: "💀" } },
+  { id: "yan", name: "烈焰熔岩窟", icon: "🌋", tier: 5, req: 4, desc: "地火翻涌，凡人踏入即刻化为灰烬。", drop: 1.6, boss: { n: "熔岩魔君", i: "🔥" } },
+  { id: "bing", name: "极北冰原", icon: "❄️", tier: 6, req: 4, desc: "万里冰封，风雪中隐有古老的低语。", drop: 1.75, boss: { n: "冰原雪魔", i: "🧊" } },
+  { id: "jiu", name: "九幽鬼域", icon: "☠️", tier: 7, req: 4, desc: "生者禁区，阴风阵阵，白骨铺地。", drop: 1.9, boss: { n: "九幽鬼帝", i: "👺" } },
+  { id: "mo", name: "北荒魔渊", icon: "😈", tier: 8, req: 4, desc: "魔气冲霄，天魔宗便建在这深渊之侧。", drop: 2.1, boss: { n: "魔渊之主", i: "😈" } },
+  { id: "jie", name: "雷劫天渊", icon: "🌩️", tier: 9, req: 4, desc: "天雷常年劈落于此，雷修者最后的试炼场。", drop: 2.4, boss: { n: "雷劫天罚", i: "⚡" } }
+];
+
+/* --- 随机事件 --- */
+/* cond: s => bool ; opt: {t:文本, act: (s)=>{...}, tip: 结果提示} */
+const EVENTS = [
+  {
+    id: "gudong", w: 10, minRealm: 0, title: "路边古洞", icon: "🕳️",
+    text: "山道旁塌了半边的土洞，里头隐隐透出灵光。",
+    opts: [
+      { t: "进去看看", fn: s => { if (Math.random() < 0.6) { const m = ri(50, 300); s.money += m; return { msg: `洞中有一具枯骨与半袋灵石，你取走了 ${fmt(m)} 灵石。`, cls: "g" }; } const d = Math.floor(s.hpMax * 0.25); s.hp = Math.max(1, s.hp - d); return { msg: `洞中冲出一只毒虫，你被咬伤，损失 ${fmt(d)} 气血。`, cls: "r" }; } },
+      { t: "绕道而行", fn: s => { s.luck += 1; return { msg: "你不贪不躁，绕道而行。冥冥中似有气运加身。", cls: "" }; } }
+    ]
+  },
+  {
+    id: "laozhe", w: 8, minRealm: 0, title: "白发老者", icon: "🧙",
+    text: "一名白发老者拦住你：「小友，可愿以十枚灵石，换一卦前程？」",
+    opts: [
+      { t: "付灵石问卦（10）", fn: s => { if (s.money < 10) return { msg: "你翻遍全身，一枚灵石也掏不出。老者摇头而去。", cls: "" }; s.money -= 10; if (Math.random() < 0.5) { s.daoXin += 3; return { msg: "老者掐指一算：「你命中有一场大劫，亦有一线生机。守住道心，方得始终。」道心 +3。", cls: "g" }; } const m = ri(200, 900); s.money += m; return { msg: "老者大笑：「有趣，有趣！」塞给你一袋灵石便走。得 " + fmt(m) + " 灵石。", cls: "g" }; } },
+      { t: "谢过老者", fn: s => ({ msg: "你拱手谢过，老者望着你的背影，喃喃道：「可惜，可惜。」", cls: "" }) }
+    ]
+  },
+  {
+    id: "luoyi", w: 7, minRealm: 0, title: "落难女修", icon: "👩",
+    text: "一名女修倒在血泊中，怀里死死抱着个玉盒。她抬眼看你，眼里全是戒备。",
+    opts: [
+      { t: "出手相救", fn: s => { s.daoXin += 8; s.reputation += 5; const m = ri(100, 600); s.money += m; return { msg: `你喂她服下丹药。她伤愈后赠你 ${fmt(m)} 灵石，说：「他日必有厚报。」道心 +8，声望 +5。`, cls: "g" }; } },
+      { t: "夺走玉盒", fn: s => { s.daoXin -= 12; s.reputation -= 8; const m = ri(800, 2500); s.money += m; return { msg: `你夺过玉盒扬长而去。身后传来她嘶哑的咒骂。得 ${fmt(m)} 灵石。道心 -12，声望 -8。`, cls: "r" }; } },
+      { t: "视而不见", fn: s => ({ msg: "你绕过那滩血。走远后，你回头看了一眼。", cls: "" }) }
+    ]
+  },
+  {
+    id: "heishi", w: 6, minRealm: 1, title: "坊市黑市", icon: "🏮",
+    text: "黑市角落里，一个蒙面人压低声音：「有件好东西，五百灵石，不讲价。」",
+    opts: [
+      { t: "买下（500）", fn: s => { if (s.money < 500) return { msg: "你囊中羞涩，蒙面人嗤笑一声转身走了。", cls: "" }; s.money -= 500; if (Math.random() < 0.55) { const it = genEquip(ri(1, 3), s.realmIdx); addBag(s, it); return { msg: `竟是件 ${it.qname}！你收进储物袋。`, cls: "g" }; } return { msg: "打开一看，是块普通石头。你被骗了。", cls: "r" }; } },
+      { t: "摇头走开", fn: s => ({ msg: "你不信天上掉馅饼，径直走开。", cls: "" }) }
+    ]
+  },
+  {
+    id: "yaowang", w: 6, minRealm: 1, title: "药王遗圃", icon: "🌿",
+    text: "荒废的药圃中，几株灵草竟还活着，年份怕是不浅。",
+    opts: [
+      { t: "小心采摘", fn: s => { const n = ri(1, 3); s.herbs += n; return { msg: `你采得 ${n} 株灵草，小心收好。`, cls: "g" }; } },
+      { t: "连根拔起", fn: s => { const n = ri(3, 6); s.herbs += n; if (Math.random() < 0.4) { const d = Math.floor(s.hpMax * 0.3); s.hp = Math.max(1, s.hp - d); return { msg: `你拔起 ${n} 株灵草，却惊动了护圃毒阵，损失 ${fmt(d)} 气血。`, cls: "r" }; } return { msg: `你连根拔起 ${n} 株灵草，满载而归。`, cls: "g" }; } }
+    ]
+  },
+  {
+    id: "jianzhong", w: 5, minRealm: 2, title: "剑冢", icon: "🗡️",
+    text: "万丈剑冢，插满断剑。中央一柄古剑嗡嗡作响，似在唤你。",
+    opts: [
+      { t: "握住剑柄", fn: s => { if (Math.random() < 0.5) { s.bonus.atk += 0.05; return { msg: "古剑认主！剑意涌入四肢百骸，攻击永久 +5%。", cls: "g" }; } const d = Math.floor(s.hpMax * 0.4); s.hp = Math.max(1, s.hp - d); return { msg: `剑气反噬！你被震飞出去，损失 ${fmt(d)} 气血。`, cls: "r" }; } },
+      { t: "拔走所有断剑", fn: s => { const m = ri(1000, 4000); s.money += m; s.reputation -= 3; return { msg: `你把断剑全拔了卖钱，得 ${fmt(m)} 灵石。剑冢中似有叹息。`, cls: "" }; } },
+      { t: "行礼离去", fn: s => { s.daoXin += 5; return { msg: "你朝剑冢深深一揖，转身离去。道心 +5。", cls: "g" }; } }
+    ]
+  },
+  {
+    id: "mofa", w: 5, minRealm: 3, title: "魔道诱惑", icon: "😈",
+    text: "一个黑袍人递来一枚血色丹药：「吞了它，你立刻能跨一个大境界。」",
+    opts: [
+      { t: "吞下血丹", fn: s => { s.daoXin -= 20; s.bonus.atk += 0.10; s.xiuwei += needXiuwei(s.realmIdx) * 0.5; return { msg: "血丹入喉，修为暴涨，但你听见心底有个声音在笑。攻击 +10%，道心 -20。", cls: "p" }; } },
+      { t: "一掌拍碎", fn: s => { s.daoXin += 10; return { msg: "你拍碎血丹，黑袍人化作黑烟散去。道心 +10。", cls: "g" }; } }
+    ]
+  },
+  {
+    id: "shangren", w: 7, minRealm: 0, title: "行脚商人", icon: "🧳",
+    text: "一个背着大包的行脚商人凑过来：「客官，看看货？」",
+    opts: [
+      { t: "挑丹药（200）", fn: s => { if (s.money < 200) return { msg: "商人见你没钱，笑着走了。", cls: "" }; s.money -= 200; const p = pick(PILLS.slice(0, 3)); addPill(s, p.id, 1); return { msg: `你买了 1 枚 ${p.name}。`, cls: "g" }; } },
+      { t: "挑灵草（100）", fn: s => { if (s.money < 100) return { msg: "商人见你没钱，笑着走了。", cls: "" }; s.money -= 100; const n = ri(2, 4); s.herbs += n; return { msg: `你买了 ${n} 株灵草。`, cls: "g" }; } },
+      { t: "不感兴趣", fn: s => ({ msg: "你摆摆手，商人悻悻走开。", cls: "" }) }
+    ]
+  },
+  {
+    id: "yanghun", w: 4, minRealm: 2, title: "古修残魂", icon: "🔮",
+    text: "荒野古洞中，一团幽蓝残魂飘向你：「小友，我坐化前将《养魂术》刻于魂火，你可愿承接？」",
+    opts: [
+      { t: "承接残魂传承", fn: s => { grantArt(s, "yanghun"); return { msg: "残魂没入识海，《养魂术》已入你神魂。", cls: "g" }; } },
+      { t: "婉拒离去", fn: s => ({ msg: "你恭敬一礼，退出古洞。残魂叹息着隐去。", cls: "" }) }
+    ]
+  },
+  {
+    id: "lingquan", w: 6, minRealm: 0, title: "山间灵泉", icon: "💧",
+    text: "一泓清泉从石缝涌出，灵气氤氲，显然是口灵泉。",
+    opts: [
+      { t: "饮泉打坐", fn: s => { const g = Math.floor(s.rate * 600); s.xiuwei += g; return { msg: `你在泉边打坐一炷香，修为 +${fmt(g)}。`, cls: "g" }; } },
+      { t: "沐浴更衣", fn: s => { s.hp = s.hpMax; s.mp = s.mpMax; return { msg: "泉水洗涤身心，气血与真气尽复。", cls: "g" }; } },
+      { t: "装几壶带走", fn: s => { s.herbs += 2; return { msg: "你装了两壶灵泉水，或可炼丹用。", cls: "" }; } }
+    ]
+  },
+  {
+    id: "canjuan", w: 5, minRealm: 2, title: "残卷", icon: "📜",
+    text: "破庙佛像后，藏着一卷残缺功法，纸页发黄。",
+    opts: [
+      { t: "参悟残卷", fn: s => { s.bonus.rate += 0.03; return { msg: "残卷所述虽不完整，却让你对修行有了新悟。修炼速度永久 +3%。", cls: "g" }; } },
+      { t: "卖掉残卷", fn: s => { const m = ri(500, 2000); s.money += m; return { msg: `残卷卖了 ${fmt(m)} 灵石。`, cls: "" }; } }
+    ]
+  },
+  {
+    id: "yaowang2", w: 4, minRealm: 4, title: "故人来访", icon: "🍶",
+    text: "一位自称是你父亲旧友的修士找上门来，带了两坛酒。",
+    opts: [
+      { t: "与他共饮", fn: s => { s.daoXin += 6; const m = ri(2000, 8000); s.money += m; return { msg: `他喝到半夜，说了许多你父亲的往事，临走留下一袋灵石。道心 +6，得 ${fmt(m)} 灵石。`, cls: "g" }; } },
+      { t: "赶他走", fn: s => { s.daoXin -= 5; return { msg: "「我不认识什么旧友。」你关上了门。道心 -5。", cls: "r" }; } }
+    ]
+  },
+  {
+    id: "mijing", w: 4, minRealm: 5, title: "上古秘境入口", icon: "🌀",
+    text: "虚空中裂开一道缝隙，里面透出古老而危险的气息。",
+    opts: [
+      { t: "踏入秘境", fn: s => { if (Math.random() < 0.65) { const m = ri(8000, 30000); s.money += m; s.herbs += ri(3, 8); return { msg: `秘境中你寻得大量灵材，得 ${fmt(m)} 灵石与若干灵草。`, cls: "g" }; } const d = Math.floor(s.hpMax * 0.6); s.hp = Math.max(1, s.hp - d); s.daoXin -= 3; return { msg: `秘境凶险异常，你重伤逃出，损失 ${fmt(d)} 气血。`, cls: "r" }; } },
+      { t: "封印裂缝", fn: s => { s.daoXin += 12; s.reputation += 10; return { msg: "你耗费修为封印了裂缝，免去一场浩劫。道心 +12，声望 +10。", cls: "g" }; } }
+    ]
+  },
+  {
+    id: "qigai", w: 6, minRealm: 0, title: "乞儿", icon: "🧒",
+    text: "一个瘦得脱形的孩子扯住你的衣角：「仙师，给口吃的吧。」",
+    opts: [
+      { t: "给些灵石（50）", fn: s => { if (s.money < 50) return { msg: "你摸了摸空荡荡的储物袋，孩子失望地松开手。", cls: "" }; s.money -= 50; s.daoXin += 6; s.luck += 2; return { msg: "孩子磕了个头跑了。道心 +6，气运 +2。", cls: "g" }; } },
+      { t: "收他做杂役", fn: s => { s.reputation += 3; s.disciple = (s.disciple || 0) + 1; return { msg: "你收下这孩子做杂役弟子，他从此有了名字。声望 +3。", cls: "" }; } },
+      { t: "推开他", fn: s => { s.daoXin -= 6; return { msg: "你推开他走了。走出很远，你还记得那双眼睛。道心 -6。", cls: "r" }; } }
+    ]
+  }
+];
+
+/* --- 炼丹配方 --- */
+const RECIPES = [
+  { out: "huiqi", herbs: 2, money: 10, diff: 0.90, req: 0 },
+  { out: "juling", herbs: 5, money: 30, diff: 0.82, req: 0 },
+  { out: "poqiao", herbs: 12, money: 120, diff: 0.70, req: 1 },
+  { out: "xisui", herbs: 20, money: 260, diff: 0.62, req: 2 },
+  { out: "wuxin", herbs: 35, money: 600, diff: 0.52, req: 3 },
+  { out: "jiuzhuan_dan", herbs: 60, money: 2000, diff: 0.42, req: 4 },
+  { out: "tiandao", herbs: 100, money: 6000, diff: 0.32, req: 4 }
+];
+
+/* --- 主线剧情 --- */
+/* cond(s): 触发条件 */
+const STORY = [
+  {
+    id: "c1", title: "第一章 · 青石镇", icon: "🏘️", cond: s => s.realmIdx >= 0,
+    text: [
+      "青石镇只有一条街，街尾是棵歪脖子老槐树。",
+      "你记事起就在这镇上，没人知道爹娘是谁。镇东头的刘半仙说，你出生那夜，天上落了颗星。",
+      "十六岁这年，你揣着三枚灵石去了镇上的【聚宝斋】，想换一本最粗浅的《引气诀》。",
+      "掌柜连眼皮都没抬：「小子，修仙不是穷人玩的东西。」你被轰了出来，攥紧那三枚灵石。",
+      "当晚，你盘坐在老槐树下，望着天，第一次暗下决心——总有一天，气，要入你的体。"
+    ],
+    reward: s => { s.money += 50; },
+    rewardTxt: "获得灵石 ×50"
+  },
+  {
+    id: "c2", title: "第二章 · 青云门", icon: "⚔️", cond: s => s.realmIdx >= majorEnd(0),
+    text: [
+      "青云剑宗每三年在青州收徒一次。今年，你去了。",
+      "三千名少年站在山门前的石阶下，最后只留下三十人。",
+      "执事长老问你：「为何修仙？」",
+      "前面的人说「为长生」，说「为家族」，说「为报仇」。轮到你了，你顿了顿：「我想知道，这世上有没有比我站的更高的地方。」",
+      "长老看了你很久，笑了：「有意思。留下吧。」"
+    ],
+    reward: s => { applySect(s, "qingyun"); s.contrib += 20; s.bonus.rate += 0.10; },
+    rewardTxt: "拜入青云剑宗（外门弟子），修炼速度 +10%"
+  },
+  {
+    id: "c3", title: "第三章 · 剑冢悟道", icon: "🗡️", cond: s => s.realmIdx >= majorEnd(1),
+    text: [
+      "宗门后山有一处剑冢，据说埋着历代陨落长老的佩剑。",
+      "你在冢前坐了七天七夜。第七夜，一柄锈剑从土里浮起，悬在你面前。",
+      "「剑者，心也。」一个苍老的声音在你识海中响起，「你的心，太急了。」",
+      "你握住剑柄。那一瞬间，你看见了剑的主人——一位在千年前独自挡住魔潮的老者。",
+      "他最后说：「小子，记住，剑是用来护人的，不是用来杀的。」"
+    ],
+    reward: s => { s.arts.push("jinfeng"); s.bonus.atk += 0.15; s.sectRank = Math.max(s.sectRank, 1); },
+    rewardTxt: "获得《青云剑典》、攻击 +15%，晋升内门弟子"
+  },
+  {
+    id: "c4", title: "第四章 · 心魔劫", icon: "🌀", cond: s => s.realmIdx >= majorEnd(2),
+    text: [
+      "金丹将成之夜，你听见了不该听见的声音。",
+      "「你不过是个没人要的野种。」——那是你自己的声音。",
+      "「你修仙，是为了什么？长生？还是不甘？」",
+      "幻境中，你回到了青石镇。老槐树还在，刘半仙还在，一切都还是十六岁那年的样子。",
+      "你站在树下，忽然明白了：你想回去，可你回不去了。",
+      "你睁开眼，天已大亮。金丹在丹田中静静旋转，映出一张陌生的脸。"
+    ],
+    reward: s => { s.daoXin += 15; s.bonus.breakRate += 0.08; s.bonus.rate += 0.10; },
+    rewardTxt: "渡过心魔劫：道心 +15，突破成功率 +8%，修炼速度 +10%"
+  },
+  {
+    id: "c5", title: "第五章 · 天魔之乱", icon: "😈", cond: s => s.realmIdx >= majorEnd(3),
+    text: [
+      "北荒天魔宗大举南下，一夜之间屠了三座城。",
+      "青云剑宗倾巢而出。你站在队伍最前方，看着漫山遍野的黑潮。",
+      "苏清月握剑站在你身侧，只说了一句：「别死。」",
+      "那一战打了七天七夜。你杀了多少魔修，自己都数不清。",
+      "战后，你在尸山血海里找到了奄奄一息的师父。他抓着你的手，说了三个字：「别……恨……天……」"
+    ],
+    reward: s => { s.reputation += 50; s.bonus.atk += 0.10; s.bonus.hp += 0.10; s.sectRank = Math.max(s.sectRank, 2); },
+    rewardTxt: "声望 +50，攻击 +10%，气血 +10%，晋升真传弟子"
+  },
+  {
+    id: "c6", title: "第六章 · 太虚之门", icon: "☯️", cond: s => s.realmIdx >= majorEnd(4),
+    text: [
+      "师父的遗物里，有一枚古朴的玉牌，背面刻着两个字：太虚。",
+      "你循着玉牌的指引，找到了太虚仙宗——一个不在地图上、只在传说里的地方。",
+      "山门前，一位白衣老者已等候多时：「我等你师父这句话，等了八百年。」",
+      "「他说，若有一日他的徒弟带着玉牌来，便告诉你真相。」",
+      "「什么真相？」",
+      "老者抬头看天，缓缓道：「天上，早就不是净土了。」"
+    ],
+    reward: s => { applySect(s, "taixu"); s.daoXin += 10; s.bonus.rate += 0.15; },
+    rewardTxt: "转入太虚仙宗，获得《太虚道经》，修炼速度 +15%"
+  },
+  {
+    id: "c7", title: "第七章 · 化神之巅", icon: "🌊", cond: s => s.realmIdx >= majorStart(STAGE_END_MAJOR),
+    text: [
+      "化神那一夜，你在剑冢坐到了天亮。",
+      "白衣老者不知何时站在你身后，看了很久，才开口：「你师父当年，也是坐到这儿。」",
+      "「他后来呢？」",
+      "「他没能再往上走。」老者顿了顿，「不是修为不够，是心不够。」",
+      "他转身下山，走了几步又停下：「这世上的山，是没有顶的。」",
+      "「你若真想看看上面有什么——先走到化神圆满再说。」"
+    ],
+    reward: s => { s.daoXin += 20; s.bonus.breakRate += 0.10; s.luck += 20; },
+    rewardTxt: "道心 +20，突破成功率 +10%，气运 +20"
+  }
+];
+
+/* --- 成就 --- */
+const ACHIEVEMENTS = [
+  { id: "a1", n: "初入修行", d: "开始第一次修炼", i: "🌱", cond: s => s.stat.totalCultivate > 0 },
+  { id: "a2", n: "筑基之姿", d: "突破至筑基境", i: "🏔️", cond: s => s.realmIdx >= majorStart(1) },
+  { id: "a3", n: "金丹大道", d: "突破至金丹境", i: "🔆", cond: s => s.realmIdx >= majorStart(2) },
+  { id: "a4", n: "元婴出窍", d: "突破至元婴境", i: "👶", cond: s => s.realmIdx >= majorStart(3) },
+  { id: "a5", n: "化神登天", d: "突破至化神境", i: "🌊", cond: s => s.realmIdx >= majorStart(4) },
+  { id: "a6", n: "化神登顶", d: "达到化神圆满", i: "🌊", cond: s => s.realmIdx >= majorEnd(STAGE_END_MAJOR) },
+  { id: "a7", n: "此界之巅", d: "抵达本版本阶段终点", i: "🏔️", cond: s => isStageEnd(s) },
+  { id: "a9", n: "散尽家财", d: "累计获得 10 万灵石", i: "💰", cond: s => s.stat.totalMoney >= 1e5 },
+  { id: "a10", n: "富甲一方", d: "累计获得 1000 万灵石", i: "💎", cond: s => s.stat.totalMoney >= 1e7 },
+  { id: "a11", n: "百战之身", d: "赢得 100 场战斗", i: "⚔️", cond: s => s.stat.wins >= 100 },
+  { id: "a12", n: "千锤百炼", d: "赢得 1000 场战斗", i: "🛡️", cond: s => s.stat.wins >= 1000 },
+  { id: "a13", n: "丹道宗师", d: "成功炼丹 50 次", i: "⚗️", cond: s => s.stat.alchemyOk >= 50 },
+  { id: "a14", n: "情根深种", d: "与任意道侣结为道侣", i: "💞", cond: s => Object.values(s.lovers).some(l => l.fav >= 200) },
+  { id: "a15", n: "万法归一", d: "习得 6 门功法", i: "📚", cond: s => s.arts.length >= 6 },
+  { id: "a16", n: "神兵在手", d: "获得一件仙器", i: "🔱", cond: s => s.bag.some(e => e.tier >= 5) },
+  { id: "a17", n: "道心通明", d: "道心达到 90 以上", i: "☯️", cond: s => s.daoXin >= 90 },
+  { id: "a18", n: "入魔", d: "道心跌破 20", i: "😈", cond: s => s.daoXin < 20 },
+  { id: "a19", n: "名动天下", d: "声望达到 500", i: "📯", cond: s => s.reputation >= 500 },
+  { id: "a20", n: "逆天改命", d: "突破失败后仍不气馁（失败 10 次）", i: "💪", cond: s => s.stat.breakFail >= 10 },
+  { id: "a21", n: "天命所归", d: "气运达到 100", i: "🍀", cond: s => s.luck >= 100 },
+  { id: "a22", n: "灵宠相伴", d: "拥有一只灵宠", i: "🐉", cond: s => s.pet !== null },
+  { id: "a23", n: "洞府之主", d: "升级洞府任意设施至 10 级", i: "🏠", cond: s => Object.values(s.cave).some(v => v >= 10) },
+  { id: "a24", n: "阅尽千帆", d: "经历 50 次随机事件", i: "🎲", cond: s => s.stat.events >= 50 },
+  { id: "a25", n: "长生久视", d: "累计游戏时间达到 10 个游戏年", i: "⏳", cond: s => gameYears(s.time) >= 10 }
+];
+
+/* --- 结局 --- */
+const ENDINGS = [
+  { id: "e_stage", n: "化神之巅", i: "🌊", cond: s => isStageEnd(s), d: "你走到化神圆满，站在了此界最高的地方。抬头看，天还很高。" },
+  { id: "e_mo", n: "堕魔", i: "😈", cond: s => s.daoXin < 20, d: "你以杀证道，血染青州。世人称你为魔，你却说：我只是比他们诚实。" },
+  { id: "e_yunluo", n: "陨落", i: "💀", cond: s => s.stat.deaths >= 5, d: "你终究没能走到最后。修真界很快忘了你的名字，如同忘了千万人。" }
+];
+function endingOf(s) {
+  for (const e of ENDINGS) if (e.cond(s)) return e;
+  return { id: "e_weizhi", n: "未竟", i: "⏳", d: "你的故事还没有结束。" };
+}
+
+/* --- 突破难度 --- */
+/* 基础成功率：炼气 → 化神（本版本 5 境），越往后越难 */
+const BREAK_BASE = [0.80, 0.70, 0.62, 0.55, 0.48];
+function breakChance(s, luckOverride) {
+  const idx = s.realmIdx;
+  if (idx >= MAX_INDEX) return 0;
+  const m = realmMajor(idx), sub = realmSub(idx), n = realmSubs(m);
+  const luck = luckOverride !== undefined ? luckOverride : s.luck;
+  let c = BREAK_BASE[m];
+  /* 小境界越高越难：按「本境界内进度比例」扣减，与重数无关。
+     炼气 10 重的跨度与筑基 4 重一致，不会因为重数多就更难。 */
+  c -= (sub / n) * 0.34;
+  c += s.bonus.breakRate                  /* 出身/剧情/宗门 */
+    + s.daoXin / 800                      /* 道心：满值 +12.5% */
+    + luck / 2500;                        /* 气运：100 点 +4% */
+  return clamp(c, 0.05, 0.95);
+}
+/* ============================================================
+   二、核心引擎
+   ============================================================ */
+/* ============================================================
+   时间系统（统一规则）
+   ------------------------------------------------------------
+   区分三种时间：
+   1) 现实时间：电脑实际经过的秒数 —— 用于离线收益、现实日重置、任务计时
+   2) 游戏时间：用于道历、剧情年份（单位：游戏日，s.time）
+   3) 修炼进度：用于修为增长、杂役任务、自动战斗进度
+
+   规则：
+   - 游戏时间与修炼进度共用同一个有效时间倍率，不允许只加速其中一个；
+   - 离线收益先按真实秒数封顶 24 小时，再应用倍率；
+   - 现实日重置（丹药次数）不受倍率影响；
+   - 暂停时修炼、任务、日历均暂停；
+   - 存档只存时间戳与进度，不靠每秒写档推进时间。
+   ============================================================ */
+const REAL_SEC_PER_GAME_DAY = 900;                       /* 1 游戏日 = 15 现实分钟 */
+const GAME_DAYS_PER_REAL_SEC = 1 / REAL_SEC_PER_GAME_DAY;
+
+const BASE_TOTAL_REAL_SEC = 50 * 24 * 60 * 60;           /* 50 个现实日（基础培养目标） */
+const OFFLINE_CAP_SEC = 24 * 60 * 60;                    /* 单次离线最多结算 24 小时 */
+const DEV_TIME_MULTIPLIERS = [1, 20, 100, 500, 2000];    /* 开发加速档（仅原型测试） */
+const DEFAULT_TIME_MULTIPLIER = 1;
+
+const GAME_DAYS_PER_YEAR = 365;                          /* 游戏内年份统一按 365 日 */
+const GAME_DAYS_PER_MONTH = 30;                          /* 道历：每月 30 日 */
+const BASE_GAME_DAYS = BASE_TOTAL_REAL_SEC / REAL_SEC_PER_GAME_DAY;   /* 4800 游戏日 */
+const BASE_GAME_YEARS = BASE_GAME_DAYS / GAME_DAYS_PER_YEAR;          /* 约 13.15 游戏年 */
+
+/* 当前有效时间倍率（游戏时间与修炼进度共用） */
+function getTimeMultiplier(s) {
+  return (s && s.speed) || DEFAULT_TIME_MULTIPLIER;
+}
+/* 离线专用：把真实离线秒数转成「有效秒数」——先封顶 24h，再乘倍率。
+   注意：此函数含 OFFLINE_CAP_SEC 封顶，严禁用于在线推进。 */
+function getOfflineEffectiveSec(realElapsedSec, multiplier = 1) {
+  const capped = Math.max(0, Math.min(realElapsedSec, OFFLINE_CAP_SEC));
+  return capped * multiplier;
+}
+/* 在线专用：把真实经过秒数转成「有效秒数」——不封顶，仅乘倍率。
+   在线推进（advanceGameTime）必须用此函数，不得调用 getOfflineEffectiveSec。 */
+function getOnlineEffectiveSec(realElapsedSec, multiplier = 1) {
+  return Math.max(0, realElapsedSec) * multiplier;
+}
+/* 有效秒数 → 游戏日 */
+function getGameDaysElapsed(effectiveElapsedSec) {
+  return effectiveElapsedSec / REAL_SEC_PER_GAME_DAY;
+}
+/* 由「现实秒 × 倍率」直接换算游戏日（在线推进用；在线不封顶） */
+function realSecToGameDays(realSec, multiplier = 1) {
+  return (realSec * multiplier) / REAL_SEC_PER_GAME_DAY;
+}
+/* 游戏日 → 现实秒（用于展示「还需多久」） */
+function gameDaysToRealSec(gameDays, multiplier = 1) {
+  return (gameDays * REAL_SEC_PER_GAME_DAY) / Math.max(1e-9, multiplier);
+}
+
+/* ============================================================
+   阶段终点（化神圆满）
+   ------------------------------------------------------------
+   本原型止于化神圆满：不代表角色死亡或存档结束，
+   显示阶段结局、未完成事件摘要与后续世界的剧情钩子。
+   ============================================================ */
+const STAGE_END_MAJOR = REALMS.length - 1;               /* 化神 */
+function isStageEnd(s) { return s.realmIdx >= majorEnd(STAGE_END_MAJOR); }
+
+const STAGE_END = {
+  title: "阶段结局 · 化神圆满",
+  icon: "🌊",
+  text: [
+    "化神圆满那日，你站在青云剑宗最高的那座峰上。",
+    "风从脚下过，云在身侧流。你忽然想起十六岁那年的青石镇——",
+    "想起老槐树，想起刘半仙，想起那个连三枚灵石都要攒半年的自己。",
+    "「原来真的有那么高的地方。」你轻声说。",
+    "可是抬头看，天还很高。",
+    "你终于明白师父那句话的意思了——别恨天。",
+    "因为天，本来就望不到头。"
+  ],
+  hooks: [
+    "北荒的魔气这一年浓了三成，天魔宗的旗子又往南挪了二百里。",
+    "太虚仙宗的白衣老者临走前留下一句话：「炼虚之上，才是真正的门槛。」",
+    "你在剑冢深处见过一柄剑，它说它等的人，还没来。",
+    "天穹偶尔会裂开一道缝，缝里有东西在看你。"
+  ],
+  summaryTitle: "未竟之事",
+  /* 未完成事件摘要：由当前状态动态生成 */
+  summary: s => {
+    const list = [];
+    const m = majorEnd(STAGE_END_MAJOR);
+    if (s.arts.length < 12) list.push(`功法只收集了 ${s.arts.length} / 27 门`);
+    if (s.lovers && Object.keys(s.lovers).length < 4) list.push(`道侣只结识了 ${Object.keys(s.lovers).length} / 4 位`);
+    if (!s.pet) list.push("尚未与任何灵兽结契");
+    if (s.achievements.length < ACHIEVEMENTS.length) list.push(`成就达成 ${s.achievements.length} / ${ACHIEVEMENTS.length}`);
+    if (s.daoXin < 90) list.push("道心尚未通明");
+    if (s.reputation < 500) list.push("声望未达「名动天下」");
+    if (!list.length) list.push("此界已无遗憾，只待天门再开。");
+    return list;
+  }
+};
+const SAVE_KEY = "xiuxian_save_v1";
+
+function newState(originId) {
+  const s = {
+    ver: 1, name: "无名", origin: originId || null, root: "wu",
+    realmIdx: 0, xiuwei: 0, hp: 0, mp: 0,
+    money: 0, herbs: 0, contrib: 0, tokens: {},
+    daoXin: 50, reputation: 0, luck: 10,
+    bonus: { atk: 0, def: 0, hp: 0, rate: 0, crit: 0, dodge: 0, lifesteal: 0, breakRate: 0, shopCost: 0, alchemy: 0, money: 0, speed: 0, mp: 0, expGain: 0 },
+    perm: { hp: 0, rate: 0 },
+    arts: [], bag: [], equip: { weapon: null, armor: null, trinket: null, boots: null },
+    pills: {}, pet: null, petLv: 1,
+    lovers: {}, sect: null, sectRank: 0,
+    cave: { lingzhen: 0, dantian: 0, waimen: 0 },
+    storyDone: [], storyQueue: [],
+    achievements: [], endings: [],
+    zone: "qingshi", zoneProgress: 0, bossKilled: {},
+    battle: null, log: [], quests: {},
+    time: 0, lastTick: nowSec(), buffs: [],
+    speed: 1, autoAdventure: false, autoBreak: false, paused: false,
+    /* 全自动战斗配置 */
+    auto: {
+      on: false,        /* 自动历练总开关 */
+      speed: 2,         /* 战斗节奏：每秒推进回合数（1=慢 2=标准 4=快 8=极速） */
+      boss: true,       /* 自动挑战首领 */
+      pill: true,       /* 气血不足时自动服药 */
+      pillHp: 0.45,     /* 服药阈值 */
+      fleeHp: 0.15,     /* 遁走阈值（0=永不遁走） */
+      restHp: 0.65,     /* 低于此气血先打坐疗伤，再战 */
+      equip: true,      /* 自动换装（更优即换） */
+      sell: true,       /* 自动变卖低阶法宝 */
+      sellTier: 3,      /* 变卖低于此品阶的法宝 */
+      autoZone: true    /* 自动前往当前境界可及的最佳区域 */
+    },
+    disciple: 0, reviveUsed: false,
+    stat: { totalCultivate: 0, totalMoney: 0, wins: 0, losses: 0, deaths: 0, alchemyOk: 0, alchemyFail: 0, events: 0, breakOk: 0, breakFail: 0, kills: 0, battles: 0, flees: 0, battleMoney: 0, autoSold: 0, stalemates: 0, zoneFights: 0 },
+    settings: { sfx: true }
+  };
+  /* 出身加成：仅在明确选择了身世时生效；取消开局选身世后，新档 origin 为 null，不附加任何出身加成/灵石。 */
+  if (originId) {
+    const o = ORIGINS.find(x => x.id === originId);
+    if (o) { o.apply(s); s.money += o.start.money; }
+  }
+  const st = calcStats(s);
+  s.hp = st.hpMax; s.mp = st.mpMax;
+  return s;
+}
+
+/* ---------- 属性聚合 ----------
+   百分比加成（功法/出身/宗门/灵宠/洞府）与固定值加成（法宝）必须分开：
+   法宝的 atk/def/hp 是绝对值，功法的才是百分比。混用会让一件布甲把气血放大几十倍。 */
+function agg(s) {
+  const pct = { atk: 0, def: 0, hp: 0, mp: 0, crit: 0, dodge: 0, lifesteal: 0, rate: 0, breakRate: 0, alchemy: 0, money: 0, speed: 0, expGain: 0, shopCost: 0 };
+  const flat = { atk: 0, def: 0, hp: 0 };
+  const addPct = o => { if (!o) return; for (const k in o) if (k in pct) pct[k] += o[k]; };
+  const addFlat = o => { if (!o) return; flat.atk += o.atk || 0; flat.def += o.def || 0; flat.hp += o.hp || 0; };
+  addPct(s.bonus);
+  s.arts.forEach(id => { const art = ARTS.find(x => x.id === id); if (art) addPct(art.effects); });
+  /* 注意：宗门加成已由 applySect 并入 s.bonus，上面 addPct(s.bonus) 已计入，切勿重复。 */
+  /* 法宝：攻/防/血为固定值，暴击/闪避/吸血为百分比 */
+  SLOTS.forEach(sl => {
+    const e = s.equip[sl.id];
+    if (!e) return;
+    addFlat(e.stats);
+    addPct({ crit: e.stats.crit || 0, dodge: e.stats.dodge || 0, lifesteal: e.stats.lifesteal || 0 });
+  });
+  if (s.pet) {
+    const p = PETS.find(x => x.id === s.pet);
+    if (p) {
+      addPct(p.stat);
+      const lv = s.petLv - 1;
+      for (const k in p.grow) {
+        if (k === "atk" || k === "def" || k === "hp") pct[k] = (pct[k] || 0) + p.grow[k] * lv;
+        else if (k === "luck") { /* 气运为绝对值，单独处理 */ }
+        else pct[k] = (pct[k] || 0) + p.grow[k] * lv;
+      }
+    }
+  }
+  pct.rate += s.cave.lingzhen * 0.03;
+  pct.alchemy += s.cave.dantian * 0.03;
+  pct.money += s.cave.waimen * 0.04;
+  /* 灵宠提供的气运（绝对值） */
+  let luckFlat = 0;
+  if (s.pet) {
+    const p = PETS.find(x => x.id === s.pet);
+    if (p) {
+      if (p.stat.luck) luckFlat += p.stat.luck;
+      if (p.grow.luck) luckFlat += p.grow.luck * (s.petLv - 1);
+    }
+  }
+  return { pct, flat, luckFlat };
+}
+function calcStats(s) {
+  const { pct: a, flat, luckFlat } = agg(s);
+  const m = realmMajor(s.realmIdx), sub = realmSub(s.realmIdx), n = realmSubs(m);
+  const R = REALMS[m] || REALMS[REALMS.length - 1];
+  const subMul = sub / n;                       /* 本境界内的进度 0~1 */
+  const sub2 = 1 + subMul * 0.72;               /* 满重时约 +72%，与原「四小境 +54%」同量级 */
+  const atk = Math.floor((R.atk * sub2 + flat.atk) * (1 + a.atk));
+  const def = Math.floor((R.def * sub2 + flat.def) * (1 + a.def));
+  const hpMax = Math.floor((R.hp * sub2 + flat.hp) * (1 + a.hp + s.perm.hp));
+  const mpMax = Math.floor(60 + s.realmIdx * 22 * (1 + a.mp));
+  const rootMul = (ROOTS.find(r => r.id === s.root) || ROOTS[0]).mul;
+  const luck = s.luck + luckFlat;
+  const baseRate = baseCultivationRate(s.realmIdx);
+  /* ---------- 修炼速度（统一口径，见 DESIGN-mortal.md §1.6；具体计算见 getCultivationRate） ----------
+     所有加成【加法累计】，最后统一乘算：
+       rate = base * (1 + artRate + caveRate + talentRate + otherRate)
+     灵根是独立的体质乘区（不属于"加成"，而是根骨差异）。
+     同一加成只能进入结算一次——功法/灵宠/天赋/丹药不得重复应用。 */
+  const r = getCultivationRate(s, baseRate, rootMul, luck);
+  const rate = r.rate;
+  return {
+    atk, def, hpMax, mpMax, rate, a, luck, luckFlat,
+    addRate: r.addRate, artRate: r.artRate, caveRate: r.caveRate, rootBonus: r.rootBonus,
+    crit: clamp(0.05 + a.crit, 0, 0.85),
+    dodge: clamp(0.03 + a.dodge, 0, 0.6),
+    lifesteal: clamp(a.lifesteal, 0, 0.5),
+    breakRate: clamp(breakChance(s, luck), 0.05, 0.99),
+    shopCost: clamp(1 + a.shopCost, 0.4, 2),
+    alchemy: a.alchemy, money: a.money, expGain: a.expGain
+  };
+}
+
+/* ---------- 修炼速度（统一口径，见 DESIGN-mortal.md §1.6） ----------
+   四来源【加法累计】，最后统一乘算（灵气+根骨+洞府+功法）：
+     rate = baseRate * (1 + artRate + caveRate + rootBonus + talentRate + otherRate) * (1 + (luck-10)/1000)
+   其中：
+     - artRate    : 已启用功法的 effects.cultivationRate 之和（含炼体，与 §1.4.5 合计 +58% 一致）
+     - caveRate   : 聚灵阵 +3% / 级
+     - rootBonus  : 灵根由「乘区」改为「封顶加法」—— Math.min(rootMul - 1, 1.0)，
+                    即五行(+0)/双(+0.6)/天(+1.0封顶)/雷冰剑/混沌(+1.0封顶)。
+                    避免 4.2 倍乘区碾压其他加成（设计 §1.6.1）。
+     - talentRate : 天赋（预留）
+     - otherRate  : 出身 / 剧情 / 永久丹药等（s.bonus.rate + s.perm.rate）
+   注意：开发倍率 devTimeMul 不在此处——由 cultivateTick / UI 在 rate 之外乘（保持"修为/现实秒"口径）。 */
+function getCultivationRate(s, baseRate, rootMul, luck) {
+  const artRate = s.arts.reduce((acc, id) => {
+    const a = ARTS.find(x => x.id === id);
+    return acc + ((a && a.effects && a.effects.cultivationRate) || 0);
+  }, 0);
+  const caveRate = s.cave.lingzhen * 0.03;          /* 聚灵阵 +3%/级 */
+  const rootBonus = Math.min(rootMul - 1, 1.0);     /* 灵根封顶加法 */
+  const talentRate = 0;                              /* 天赋（预留） */
+  const otherRate = s.bonus.rate + s.perm.rate;      /* 出身/剧情/永久丹药等 */
+  const addRate = artRate + caveRate + rootBonus + talentRate + otherRate;
+  const rate = baseRate * (1 + addRate) * (1 + (luck - 10) / 1000);   /* 修为 / 现实秒 */
+  return { rate, addRate, artRate, caveRate, rootBonus };
+}
+
+/* ---------- 日志 / 提示 ---------- */
+function addLog(s, txt, cls) {
+  s.log.unshift({ t: gameDate(s.time), txt, cls: cls || "" });
+  if (s.log.length > 120) s.log.length = 120;
+}
+function toast(msg, cls) {
+  const el = document.createElement("div");
+  el.className = "toast " + (cls || "");
+  el.textContent = msg;
+  $("#toast-layer").appendChild(el);
+  setTimeout(() => { el.style.transition = ".4s"; el.style.opacity = "0"; el.style.transform = "translateY(-10px)"; }, 2200);
+  setTimeout(() => el.remove(), 2700);
+}
+/* ---------- 音效（Web Audio 合成，无素材） ---------- */
+let AC = null;
+function sfx(kind) {
+  if (!G || !G.settings.sfx || G._silent) return;
+  try {
+    if (!AC) AC = new (window.AudioContext || window.webkitAudioContext)();
+    if (AC.state === "suspended") AC.resume();
+    const t = AC.currentTime;
+    const mk = (f, f2, dur, type, vol) => {
+      const o = AC.createOscillator(), g = AC.createGain();
+      o.type = type || "sine"; o.frequency.setValueAtTime(f, t);
+      if (f2) o.frequency.exponentialRampToValueAtTime(f2, t + dur);
+      g.gain.setValueAtTime(0, t);
+      g.gain.linearRampToValueAtTime(vol || 0.14, t + 0.01);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      o.connect(g); g.connect(AC.destination); o.start(t); o.stop(t + dur + 0.02);
+    };
+    if (kind === "click") mk(520, 700, 0.07, "triangle", 0.07);
+    else if (kind === "hit") mk(180, 70, 0.13, "square", 0.09);
+    else if (kind === "crit") { mk(300, 90, 0.2, "sawtooth", 0.12); mk(900, 300, 0.16, "triangle", 0.07); }
+    else if (kind === "win") { mk(523, 0, 0.14, "sine", 0.1); setTimeout(() => mk(784, 0, 0.2, "sine", 0.1), 110); }
+    else if (kind === "lose") { mk(300, 120, 0.35, "sine", 0.11); }
+    else if (kind === "break") { mk(220, 880, 0.5, "sine", 0.13); setTimeout(() => mk(660, 1320, 0.6, "triangle", 0.1), 180); }
+    else if (kind === "fail") { mk(400, 90, 0.5, "sawtooth", 0.11); }
+    else if (kind === "coin") { mk(1200, 1800, 0.08, "triangle", 0.07); }
+    else if (kind === "levelup") { mk(600, 1200, 0.3, "sine", 0.11); }
+  } catch (e) { }
+}
+
+/* ---------- 背包 / 丹药 ---------- */
+function addBag(s, item) { s.bag.push(item); }
+function addPill(s, id, n) { s.pills[id] = (s.pills[id] || 0) + (n || 1); }
+function usePill(s, id, n) {
+  if ((s.pills[id] || 0) < (n || 1)) return false;
+  s.pills[id] -= (n || 1);
+  if (s.pills[id] <= 0) delete s.pills[id];
+  return true;
+}
+function genEquip(tier, realmIdx) {
+  const slot = pick(SLOTS).id;
+  const ni = clamp(realmMajor(realmIdx) + ri(-1, 1), 0, 8);
+  const base = EQUIP_BASE[slot][ni];
+  const bias = tier * 5;
+  const roll = Math.random() * 100;
+  let si = 0;
+  if (roll < 1.5 + bias * 0.25) si = 5;
+  else if (roll < 7 + bias * 0.55) si = 4;
+  else if (roll < 19 + bias * 0.9) si = 3;
+  else if (roll < 41 + bias * 1.1) si = 2;
+  else if (roll < 70) si = 1;
+  const sfx = EQUIP_SUFFIX[si];
+  const power = base.a * sfx.m;
+  const stats = {};
+  if (slot === "weapon") stats.atk = Math.floor(power);
+  else if (slot === "armor") { stats.def = Math.floor(power * 0.8); stats.hp = Math.floor(power * 4); }
+  else if (slot === "boots") { stats.def = Math.floor(power * 0.45); stats.dodge = +Math.min(0.06, power / 4000).toFixed(4); }
+  else { stats.atk = Math.floor(power * 0.55); stats.hp = Math.floor(power * 2.6); }
+  const exPool = ["atk", "def", "hp", "crit", "dodge", "lifesteal"];
+  const nEx = ri(1, 2);
+  for (let i = 0; i < nEx; i++) {
+    const k = pick(exPool);
+    if (k === "crit") stats.crit = +((stats.crit || 0) + Math.min(0.06, power / 6000 + 0.005)).toFixed(4);
+    else if (k === "dodge") stats.dodge = +((stats.dodge || 0) + Math.min(0.05, power / 8000 + 0.004)).toFixed(4);
+    else if (k === "lifesteal") stats.lifesteal = +((stats.lifesteal || 0) + Math.min(0.04, power / 12000 + 0.003)).toFixed(4);
+    else if (k === "hp") stats.hp = (stats.hp || 0) + Math.floor(power * 1.8);
+    else if (k === "def") stats.def = (stats.def || 0) + Math.floor(power * 0.3);
+    else stats.atk = (stats.atk || 0) + Math.floor(power * 0.35);
+  }
+  const qname = base.n + sfx.s;
+  return {
+    uid: "e" + Math.random().toString(36).slice(2, 9),
+    slot, name: base.n, qname, tier: sfx.t, stats,
+    price: Math.floor(base.a * sfx.m * 3 + 20),
+    ilv: ni
+  };
+}
+function equipScore(e) {
+  if (!e) return 0;
+  const st = e.stats;
+  return (st.atk || 0) * 2 + (st.def || 0) * 1.5 + (st.hp || 0) * 0.12 + (st.crit || 0) * 3000 + (st.dodge || 0) * 2500 + (st.lifesteal || 0) * 2500;
+}
+function equipItem(s, uid) {
+  const i = s.bag.findIndex(e => e.uid === uid);
+  if (i < 0) return;
+  const it = s.bag[i];
+  const old = s.equip[it.slot];
+  s.equip[it.slot] = it;
+  s.bag.splice(i, 1);
+  if (old) s.bag.push(old);
+  addLog(s, `装备了 ${it.qname}。`, "g");
+  sfx("click");
+  const st = calcStats(s);
+  s.hp = Math.min(s.hp, st.hpMax);
+}
+function unequip(s, slot) {
+  const e = s.equip[slot];
+  if (!e) return;
+  s.bag.push(e); s.equip[slot] = null;
+  const st = calcStats(s); s.hp = Math.min(s.hp, st.hpMax);
+}
+
+/* ---------- 战斗 ---------- */
+function monsterForZone(s, zone, isBoss) {
+  const pool = MONSTERS.filter(m => m.lv <= zone.tier + 2 && m.lv >= Math.max(0, zone.tier - 3));
+  const m = pool.length ? pick(pool) : MONSTERS[0];
+  /* 传入区域 tier（地图难度），由 makeMonster 内部换算成大境界 */
+  const mm = makeMonster(zone.tier, m.n, m.i, s.realmIdx);
+  if (isBoss) {
+    mm.name = zone.boss.n; mm.icon = zone.boss.i; mm.isBoss = true;
+    mm.hpMax = Math.floor(mm.hpMax * 3.2); mm.atk = Math.floor(mm.atk * 1.5);
+    mm.def = Math.floor(mm.def * 1.4);
+  }
+  mm.hp = mm.hpMax;
+  mm.zone = zone.id; mm.maxRound = 40;
+  return mm;
+}
+function startBattle(s, foe, kind) {
+  s.battle = { foe, round: 0, kind: kind || "field", log: [], cd: 0, over: false, reward: null };
+  s.reviveUsed = false;
+  s.stat.battles++;
+  const pet = s.pet ? PETS.find(p => p.id === s.pet) : null;
+  if (pet && pet.id === "jiu") foe.atk = Math.floor(foe.atk * 0.8);
+  addBattleLog(s, `⚔️ 遭遇 ${foe.name}！`, "sys");
+}
+function addBattleLog(s, txt, cls) {
+  if (!s.battle) return;
+  s.battle.log.push({ txt, cls: cls || "" });
+  if (s.battle.log.length > 60) s.battle.log.shift();
+}
+function dmgCalc(atk, def) {
+  /* 减伤曲线：def 越高减伤越多，但保留下限，避免低攻高防时伤害趋近于 1。
+     系数 1.8 → 2.6 让前期（攻防都低）也能打出有意义的三位数以内伤害。 */
+  const raw = atk * (1 - def / (def + atk * 2.6));
+  return Math.max(1, Math.floor(raw * rnd(0.9, 1.1)));
+}
+function battleRound(s) {
+  const b = s.battle; if (!b || b.over) return;
+  const st = calcStats(s);
+  const foe = b.foe;
+  b.round++;
+  const pet = s.pet ? PETS.find(p => p.id === s.pet) : null;
+
+  /* 玩家出手 */
+  let mult = 1, label = "";
+  const hasSkill = s.arts.some(id => { const a = ARTS.find(x => x.id === id); return a && a.type === "skill"; });
+  if (hasSkill && b.round % 3 === 0) { mult = 1.9; label = "【战技】"; }
+  let miss = Math.random() < foe.dodge;
+  if (miss) addBattleLog(s, `你${label}出手，被 ${foe.name} 闪避。`, "dim");
+  else {
+    let d = dmgCalc(st.atk * mult, foe.def);
+    const isCrit = Math.random() < st.crit;
+    if (isCrit) d = Math.floor(d * 1.8);
+    foe.hp -= d;
+    if (isCrit) sfx("crit"); else sfx("hit");
+    addBattleLog(s, `${label}你击中 ${foe.name}，造成 <b>${fmt(d)}</b> 伤害${isCrit ? "（暴击！）" : ""}。`, "me");
+    if (st.lifesteal > 0) {
+      const heal = Math.floor(d * st.lifesteal);
+      if (heal > 0) { s.hp = Math.min(st.hpMax, s.hp + heal); addBattleLog(s, `你吸取了 ${fmt(heal)} 气血。`, "dim"); }
+    }
+  }
+  /* 灵宠 */
+  if (pet) {
+    if (pet.id === "huo" && b.round % 5 === 0) { const d = dmgCalc(st.atk * 2, foe.def); foe.hp -= d; addBattleLog(s, `🦊 火灵狐喷出烈焰，造成 ${fmt(d)} 伤害。`, "me"); }
+    if (pet.id === "lei" && b.round % 4 === 0) { const d = dmgCalc(st.atk * 1.5, foe.def); foe.hp -= d; addBattleLog(s, `🦅 雷鹏俯冲而下，造成 ${fmt(d)} 伤害。`, "me"); }
+    if (pet.id === "long" && b.round % 3 === 0) { const d = dmgCalc(st.atk * 3, foe.def); foe.hp -= d; const h = Math.floor(st.hpMax * 0.1); s.hp = Math.min(st.hpMax, s.hp + h); addBattleLog(s, `🐉 螭龙怒吼，造成 ${fmt(d)} 伤害，并回复 ${fmt(h)} 气血。`, "me"); }
+  }
+  if (foe.hp <= 0) return endBattle(s, true);
+
+  /* 敌人出手 */
+  miss = Math.random() < st.dodge;
+  if (miss) addBattleLog(s, `${foe.name} 攻来，你侧身避过。`, "dim");
+  else {
+    let d = dmgCalc(foe.atk, st.def);
+    if (pet && pet.id === "xuan") d = Math.floor(d * 0.85);
+    const isCrit = Math.random() < foe.crit;
+    if (isCrit) d = Math.floor(d * 1.7);
+    s.hp -= d;
+    addBattleLog(s, `${foe.name} 击中你，受到 <b>${fmt(d)}</b> 伤害${isCrit ? "（暴击！）" : ""}。`, "foe");
+  }
+  if (s.hp <= 0) {
+    const hasRevive = (s.pills["jiuzhuan_dan"] || 0) > 0 && !s.reviveUsed;
+    if (hasRevive) {
+      s.reviveUsed = true; usePill(s, "jiuzhuan_dan", 1);
+      s.hp = st.hpMax;
+      addBattleLog(s, "⚪ 九转还魂丹光华大作，你自死境中归来！", "sys");
+      sfx("win");
+    } else return endBattle(s, false);
+  }
+  if (b.round >= foe.maxRound) {
+    addBattleLog(s, "⏳ 缠斗过久，双方各自退去。", "sys");
+    return endBattle(s, false, true);
+  }
+}
+function endBattle(s, win, stalemate) {
+  const b = s.battle; if (!b) return;
+  const foe = b.foe;
+  b.over = true; b.win = win;
+  b.doneIn = 0.5 / Math.max(1, s.auto.speed);   /* 结束后短暂停顿，用 dt 倒计时而非墙钟 */
+  const zone = ZONES.find(z => z.id === foe.zone) || ZONES[0];
+  /* 僵持：既未胜也未败，不施加死亡惩罚；连续僵持则自动降级策略 */
+  if (stalemate) {
+    s.stat.stalemates++;
+    s._stalemates = (s._stalemates || 0) + 1;
+    addBattleLog(s, "🤖 久战不下，未分胜负。", "dim");
+    if (s.auto.on && s.auto.boss && s._stalemates >= 3) {
+      s.auto.boss = false;
+      addBattleLog(s, "🤖 战力不足以速胜首领，已自动暂停「挑战首领」。", "sys");
+      toast("⚠️ 战力不足，已暂停自动挑战首领", "y");
+    }
+    return;
+  }
+  if (win) {
+    s.stat.wins++; s.stat.kills++;
+    s._stalemates = 0;
+    if (!s._silent) sfx("win");
+    addBattleLog(s, `✨ 你击败了 ${foe.name}！`, "sys");
+    const st = calcStats(s);
+    let money = Math.floor((20 + foe.tier * 45 + foe.tier * foe.tier * 12) * zone.drop * (1 + st.money) * rnd(0.8, 1.3));
+    if (foe.isBoss) money *= 4;
+    money = Math.floor(money * (1 + st.expGain));
+    s.money += money; s.stat.totalMoney += money; s.stat.battleMoney += money;
+    const xw = Math.floor(needXiuwei(s.realmIdx) * (0.06 + foe.tier * 0.012) * (1 + st.expGain));
+    s.xiuwei += xw;
+    let txt = `获得 ${fmt(money)} 灵石、${fmt(xw)} 修为`;
+    const lootRoll = Math.random();
+    if (lootRoll < (foe.isBoss ? 0.85 : 0.14)) {
+      const it = genEquip(foe.tier, s.realmIdx);
+      addBag(s, it);
+      txt += `、<span class="q${it.tier}">${it.qname}</span>`;
+    }
+    if (Math.random() < 0.25) { s.herbs += ri(1, 2 + Math.floor(foe.tier / 2)); txt += "、灵草"; }
+    if (Math.random() < 0.08) { const p = pick(PILLS.slice(0, 4)); addPill(s, p.id, 1); txt += "、" + p.name; }
+    addBattleLog(s, "🎁 " + txt + "。", "sys");
+    if (foe.isBoss) { s.bossKilled[zone.id] = true; s.zoneProgress = 0; }
+    else s.zoneProgress++;
+    s.stat.zoneFights++;   /* 历练场次（含首领击败），供御风术/玄冰诀等功法前置计数 */
+    checkArtGrants(s);     /* 历练/首领击杀满足御风术、玄冰诀、破军拳、诛天剑意等前置 */
+    /* 自动整理战利品 */
+    if (s.auto.on) { autoEquipBest(s); autoSellJunk(s); }
+  } else {
+    s.stat.losses++; s.stat.deaths++;
+    if (!s._silent) sfx("lose");
+    addBattleLog(s, "💀 你力竭倒下……", "foe");
+    /* 重罚：可能跌境界 */
+    const lost = Math.floor(s.xiuwei * 0.35);
+    s.xiuwei = Math.max(0, s.xiuwei - lost);
+    let dropTxt = `损失 ${fmt(lost)} 修为`;
+    if (Math.random() < 0.45 && s.realmIdx > 0) {
+      s.realmIdx--;
+      dropTxt += `，境界跌落至 <span class="blood">${realmInfo(s.realmIdx).name}</span>`;
+      s.xiuwei = 0;
+    }
+    if (s.bag.length > 0 && Math.random() < 0.5) {
+      const i = ri(0, s.bag.length - 1);
+      const lost2 = s.bag.splice(i, 1)[0];
+      dropTxt += `，遗失 <span class="q${lost2.tier}">${lost2.qname}</span>`;
+    }
+    s.daoXin = Math.max(0, s.daoXin - 3);
+    addBattleLog(s, "💔 " + dropTxt + "。", "foe");
+    s.hp = 1;
+  }
+  const nst = calcStats(s);
+  s.hp = win ? Math.min(nst.hpMax, s.hp) : 1;
+}
+/* ---------- 全自动战斗辅助 ---------- */
+function autoEquipBest(s) {
+  if (!s.auto.equip) return;
+  SLOTS.forEach(sl => {
+    let best = s.equip[sl.id], bi = -1;
+    s.bag.forEach((it, i) => {
+      if (it.slot !== sl.id) return;
+      if (equipScore(it) > equipScore(best)) { best = it; bi = i; }
+    });
+    if (bi >= 0) {
+      const it = s.bag.splice(bi, 1)[0];
+      if (s.equip[sl.id]) s.bag.push(s.equip[sl.id]);
+      s.equip[sl.id] = it;
+    }
+  });
+}
+function autoSellJunk(s) {
+  if (!s.auto.sell) return 0;
+  const keep = [], sold = [];
+  s.bag.forEach(it => (it.tier >= s.auto.sellTier ? keep : sold).push(it));
+  if (!sold.length) return 0;
+  const money = sold.reduce((a, b) => a + b.price, 0);
+  s.bag = keep;
+  s.money += money; s.stat.totalMoney += money;
+  s.stat.autoSold += sold.length;
+  return money;
+}
+/* 返回 true 表示本回合已被"服药/遁走"等行为替代 */
+function autoBattleManage(s) {
+  const st = calcStats(s);
+  const hpRatio = s.hp / st.hpMax;
+  /* 1) 濒危遁走 */
+  if (s.auto.fleeHp > 0 && hpRatio < s.auto.fleeHp) {
+    const hasRevive = (s.pills["jiuzhuan_dan"] || 0) > 0 && !s.reviveUsed;
+    if (!hasRevive) {
+      s.stat.flees++;
+      addBattleLog(s, "🏃 气血将尽，你果断遁走。", "dim");
+      s.battle.over = true; s.battle.fled = true;
+      s.battle.doneIn = 0.4 / Math.max(1, s.auto.speed);
+      return true;
+    }
+  }
+  /* 2) 自动服药 */
+  if (s.auto.pill && hpRatio < s.auto.pillHp && (s.pills["huiqi"] || 0) > 0) {
+    if (usePill(s, "huiqi", 1)) {
+      const h = Math.floor(st.hpMax * 0.30);
+      s.hp = Math.min(st.hpMax, s.hp + h);
+      addBattleLog(s, `🔵 你服下回气丹，回复 ${fmt(h)} 气血。`, "sys");
+      return true;
+    }
+  }
+  return false;
+}
+function nowReal() { return Date.now() / 1000; }
+/* 自动战斗主调度：由主循环驱动 */
+function autoBattleTick(s, dt) {
+  const a = s.auto;
+  if (!a.on) return;
+  const st = calcStats(s);
+  /* 无战斗：疗伤或开下一场 */
+  if (!s.battle) {
+    /* 气血不足则打坐疗伤（疗伤期间正常修炼） */
+    if (s.hp < st.hpMax * a.restHp) return;
+    s._advCd = (s._advCd || 0) + dt;
+    if (s._advCd < 0.35) return;
+    s._advCd = 0;
+    /* 自动前往最佳区域：以「不超过自身大境界」为准，而非仅看解锁门槛。
+       ZONES.req 只是最低解锁条件，按 tier 匹配当前境界才打得动，否则收益反降。 */
+    if (a.autoZone) {
+      const myMajor = realmMajor(s.realmIdx);
+      let best = null;
+      for (const z of ZONES) {
+        if (s.realmIdx < majorStart(z.req)) continue;
+        if (z.tier > myMajor) continue;              /* 不越级送死 */
+        if (!best || z.tier > best.tier) best = z;
+      }
+      if (!best) best = ZONES[0];
+      if (best.id !== s.zone) {
+        s.zone = best.id; s.zoneProgress = 0; s._bossCd = 0;
+        addLog(s, `🤖 自动前往 ${best.icon} ${best.name} 历练。`, "sys");
+      }
+    }
+    const zone = ZONES.find(z => z.id === s.zone) || ZONES[0];
+    /* 首领：仅当预估能打赢时才挑战。
+       首领血量 3.2 倍、攻击 1.5 倍，失败会掉境界且代价很重，
+       所以在战力不足时必须退回刷普通怪，否则会陷入"反复送死"。 */
+    let wantBoss = false;
+    if (a.boss && (!s.bossKilled[zone.id] || s._bossCd === undefined || s._bossCd <= 0)) {
+      const probe = monsterForZone(s, zone, true);
+      const wr = estimateWinChance(s, probe);
+      if (wr >= 0.85) wantBoss = true;
+      else if (!s._bossWarned) {
+        s._bossWarned = true;
+        addBattleLog(s, "🤖 战力尚不足以稳胜本地首领，先刷普通妖兽。", "sys");
+      }
+    }
+    doAdventure(s, wantBoss ? "boss" : "field");
+    if (wantBoss) s._bossCd = 8; else s._bossCd = Math.max(0, (s._bossCd || 0) - 1);
+    return;
+  }
+  const b = s.battle;
+  /* 战斗已结束：倒计时结束后清理，下一轮开新战 */
+  if (b.over) {
+    b.doneIn = (b.doneIn || 0) - dt;
+    if (b.doneIn <= 0) s.battle = null;
+    return;
+  }
+  /* 回合推进 */
+  b.cd += dt;
+  const interval = 1 / Math.max(0.5, a.speed);
+  while (b.cd >= interval && s.battle && !s.battle.over) {
+    b.cd -= interval;
+    if (!autoBattleManage(s)) battleRound(s);
+  }
+}
+/* ============================================================
+   三、修炼 / 突破 / 飞升
+   ============================================================ */
+/* 数值兜底：任何异常写入（NaN/Inf/负数）都在此处被纠正，保护存档 */
+function sanitize(s) {
+  const st = calcStats(s);
+  const num = (v, d) => (typeof v === "number" && isFinite(v) ? v : d);
+  s.xiuwei = Math.max(0, num(s.xiuwei, 0));
+  s.money = Math.max(0, Math.floor(num(s.money, 0)));
+  s.herbs = Math.max(0, Math.floor(num(s.herbs, 0)));
+  s.contrib = Math.max(0, Math.floor(num(s.contrib, 0)));
+  s.luck = Math.max(0, num(s.luck, 10));
+  s.reputation = Math.max(0, num(s.reputation, 0));
+  s.daoXin = clamp(num(s.daoXin, 50), 0, 100);
+  s.hp = clamp(num(s.hp, st.hpMax), 1, st.hpMax);
+  s.mp = clamp(num(s.mp, st.mpMax), 0, st.mpMax);
+  s.time = Math.max(0, num(s.time, 0));
+  s.realmIdx = clamp(Math.floor(num(s.realmIdx, 0)), 0, MAX_INDEX);
+  return s;
+}
+/* 修炼推进。
+   入参 realElapsedSec = 真实经过秒数（已含时间倍率由调用方决定）。
+   统一在这里推进：修为、游戏日历、buff 计时、自然恢复。
+   速度单位为「修为 / 现实秒」，因此修为增量 = rate × 真实秒 × 倍率。 */
+function cultivateTick(s, realElapsedSec, timeMul) {
+  const st = calcStats(s);
+  const mul = (timeMul === undefined) ? getTimeMultiplier(s) : timeMul;
+  const effSec = realElapsedSec * mul;              /* 有效修炼秒数 */
+  const gain = st.rate * effSec;
+  s.xiuwei += gain;
+  s.stat.totalCultivate += gain;
+  s.time += realSecToGameDays(realElapsedSec, mul); /* 日历与修炼共用同一倍率 */
+  /* buff 到期（按有效秒计时） */
+  s.buffs = s.buffs.filter(b => { b.left -= effSec; return b.left > 0; });
+  /* 自然恢复：每现实秒回复 8% 气血 / 12% 真气。
+     自动战斗开启时，疗伤同样按战斗倍率加速，否则高倍率会被回血卡住。 */
+  const healMul = (s.auto && s.auto.on) ? Math.max(1, s.auto.speed) : 1;
+  s.hp = Math.min(st.hpMax, s.hp + st.hpMax * 0.08 * effSec * healMul);
+  s.mp = Math.min(st.mpMax, s.mp + st.mpMax * 0.12 * effSec * healMul);
+  sanitize(s);
+}
+function tryBreak(s, isAuto) {
+  const idx = s.realmIdx;
+  if (idx >= MAX_INDEX) { if (!isAuto) toast("已至化神圆满，此界前路已尽。", ""); return; }
+  const need = needXiuwei(idx);
+  if (s.xiuwei < need) { if (!isAuto) toast("修为不足，尚需 " + fmt(need - s.xiuwei) + " 修为。", "r"); return; }
+  let ch = breakChance(s);
+  let usedPill = null, noDrop = false;
+  if (s.pendingPill && (s.pills[s.pendingPill] || 0) > 0) {
+    const p = PILLS.find(x => x.id === s.pendingPill);
+    if (p && p.breakAdd) { ch += p.breakAdd; usedPill = p; noDrop = !!p.noDrop; usePill(s, p.id, 1); }
+  }
+  ch = clamp(ch, 0.05, 0.99);
+  s.xiuwei -= need;
+  if (Math.random() < ch) {
+    s.realmIdx++;
+    s.stat.breakOk++;
+    s._failStreak = 0;
+    const st = calcStats(s);
+    s.hp = st.hpMax; s.mp = st.mpMax;
+    addLog(s, `🎉 突破成功！境界提升至 ${realmInfo(s.realmIdx).name}。`, "g");
+    sfx("break");
+    toast(`突破成功！${realmInfo(s.realmIdx).name}`, "g");
+    checkStory(s);
+    checkAchievements(s);
+    /* 抵达化神圆满 → 阶段结局 */
+    if (isStageEnd(s) && !s.stageEndShown) {
+      setTimeout(() => showStageEnd(s), 700);
+    }
+  } else {
+    s.stat.breakFail++;
+    const back = Math.floor(need * 0.25);
+    s.xiuwei = Math.max(0, s.xiuwei - back);
+    let txt = `突破失败，修为倒退 ${fmt(back)}`;
+    /* 跌落境界：概率随连败次数递增，但保底不清空修为，避免"修炼越快罚得越狠"的倒挂 */
+    s._failStreak = (s._failStreak || 0) + 1;
+    const dropChance = Math.min(0.45, 0.10 + s._failStreak * 0.08);
+    if (!noDrop && s.realmIdx > 0 && Math.random() < dropChance) {
+      s.realmIdx--;
+      s.xiuwei = Math.floor(needXiuwei(s.realmIdx) * 0.5);
+      s._failStreak = 0;
+      txt += `，境界跌落至 <span class="blood">${realmInfo(s.realmIdx).name}</span>`;
+    } else {
+      /* 未跌落时，保留部分已投入修为，下次更容易成功 */
+      s.xiuwei += Math.floor(need * 0.15);
+    }
+    const stNow = calcStats(s);
+    const d = Math.floor(stNow.hpMax * 0.25);
+    s.hp = Math.max(1, s.hp - d);
+    s.daoXin = Math.max(0, s.daoXin - 2);
+    addLog(s, "💢 " + txt + "，气血受损。", "r");
+    sfx("fail");
+    toast("突破失败……" + (s.realmIdx < idx ? "境界跌落！" : ""), "r");
+  }
+  if (usedPill) s.pendingPill = null;
+  render();
+}
+/* 阶段终点 */
+/* 抵达阶段终点（化神圆满）：显示阶段结局 + 未竟之事 + 后续钩子。
+   注意：这不是死亡，也不是存档结束；存档仍可读取与继续挂机。 */
+function showStageEnd(s) {
+  if (s.stageEndShown) {
+    /* 已看过则只做简短提示，避免每次进页面都弹 */
+    toast("已至化神圆满，此界前路已尽。", "");
+    return;
+  }
+  s.stageEndShown = true;
+  const paras = STAGE_END.text.map(t => `<p>${t}</p>`).join("");
+  const undone = STAGE_END.summary(s).map(t => `<li>${t}</li>`).join("");
+  const hooks = STAGE_END.hooks.map(t => `<p class="tiny">· ${t}</p>`).join("");
+  addLog(s, "🌊 化神圆满，本阶段告一段落。", "g");
+  sfx("break");
+  showModal(`${STAGE_END.icon} ${STAGE_END.title}`, `
+    ${paras}
+    <div class="hr"></div>
+    <p class="gold">【${STAGE_END.summaryTitle}】</p>
+    <ul style="margin:6px 0 10px 18px;line-height:1.9">${undone}</ul>
+    <div class="hr"></div>
+    <p class="gold">【此界未了】</p>
+    ${hooks}
+    <div class="hr"></div>
+    <p class="tiny">本版本止于化神。存档已保留，炼虚及以上将于后续版本开放。</p>
+  `, [
+    { t: "继续修行（挂机）", pri: true, fn: () => { closeModal(); render(); } },
+    { t: "查看成就", fn: () => { closeModal(); G.tab = "achieve"; render(); } }
+  ]);
+  checkAchievements(s);
+}
+
+/* ============================================================
+   四、历练 / 事件 / 剧情
+   ============================================================ */
+function doAdventure(s, mode) {
+  if (s.battle) return;
+  const zone = ZONES.find(z => z.id === s.zone) || ZONES[0];
+  const isBoss = mode === "boss";
+  if (isBoss && s.bossKilled[zone.id] && !zone.repeatBoss) { /* 仍可重复挑战 */ }
+  const foe = monsterForZone(s, zone, isBoss);
+  startBattle(s, foe, isBoss ? "boss" : "field");
+  sfx("click");
+  render();
+}
+function rollEvent(s) {
+  const pool = EVENTS.filter(e => e.minRealm <= s.realmIdx);
+  const tot = pool.reduce((a, b) => a + b.w, 0);
+  let r = Math.random() * tot;
+  for (const e of pool) { r -= e.w; if (r <= 0) return e; }
+  return pool[0];
+}
+/* 事件执行器：临时挂载派生字段（hpMax/mpMax/rate），事件可直接读取，
+   执行后清理并校正气血/真气，避免 NaN 污染存档 */
+function withDerived(s, fn) {
+  const st = calcStats(s);
+  s.hpMax = st.hpMax; s.mpMax = st.mpMax; s.rate = st.rate;
+  try {
+    return fn(s);
+  } finally {
+    delete s.hpMax; delete s.mpMax; delete s.rate;
+    const st2 = calcStats(s);
+    s.hp = clamp(isFinite(s.hp) ? s.hp : st2.hpMax, 1, st2.hpMax);
+    s.mp = clamp(isFinite(s.mp) ? s.mp : st2.mpMax, 0, st2.mpMax);
+    s.money = Math.max(0, isFinite(s.money) ? Math.floor(s.money) : 0);
+    s.herbs = Math.max(0, isFinite(s.herbs) ? Math.floor(s.herbs) : 0);
+    s.daoXin = clamp(isFinite(s.daoXin) ? s.daoXin : 50, 0, 100);
+  }
+}
+function openEventModal(s, ev) {
+  s.stat.events++;
+  const btns = ev.opts.map(o => ({
+    t: o.t, fn: () => {
+      const res = withDerived(s, o.fn);
+      closeModal();
+      addLog(s, `【${ev.title}】${res.msg.replace(/<[^>]+>/g, "")}`, res.cls);
+      toast(res.msg.replace(/<[^>]+>/g, "").slice(0, 40) + (res.msg.length > 40 ? "…" : ""), res.cls);
+      checkAchievements(s);
+      save();
+      render();
+    }
+  }));
+  showModal(`${ev.icon} ${ev.title}`, `<p>${ev.text}</p>`, btns);
+}
+/* 主线检查 */
+function checkStory(s) {
+  if (s.storyQueue.length) return;   /* 一次只推进一段剧情 */
+  const all = STORY;
+  for (const st of all) {
+    if (s.storyDone.includes(st.id)) continue;
+    if (st.cond(s)) {
+      s.storyDone.push(st.id);
+      if (st.reward) st.reward(s);
+      s.storyQueue.push(st.id);
+      break;
+    }
+  }
+}
+function showStoryModal(s, st) {
+  const paras = st.text.map(t => `<p>${t}</p>`).join("");
+  showModal(`${st.icon} ${st.title}`, paras + (st.rewardTxt ? `<div class="hr"></div><p class="gold">【获得】${st.rewardTxt}</p>` : ""),
+    [{ t: "继续", pri: true, fn: () => { closeModal(); s.storyQueue.shift(); save(); render(); } }]);
+}
+/* 成就 */
+function checkAchievements(s) {
+  ACHIEVEMENTS.forEach(a => {
+    if (!s.achievements.includes(a.id) && a.cond(s)) {
+      s.achievements.push(a.id);
+      toast(`🏆 成就达成：${a.n}`, "y");
+      sfx("levelup");
+    }
+  });
+  checkArtGrants(s);   /* 成就达成/功法增多后刷新万法归宗、九转玄功等前置 */
+}
+
+/* 拜入/转入宗门：写入 s.sect 并将宗门加成并入个人 bonus（rate/breakRate 为加法键，
+   并入后可被 getCultivationRate 与 breakChance 同时读到），并直接授予宗门本命功法。
+   剧情转宗（如 c6 太虚）与玩家手动拜师均走此函数，避免遗漏宗门加成。 */
+function applySect(s, id) {
+  const sec = SECTS.find(x => x.id === id);
+  if (!sec) return;
+  s.sect = id; s.sectRank = 0; s.contrib = 0;
+  if (sec.bonus) Object.assign(s.bonus, sec.bonus);   /* rate/breakRate/atk/def… 均加法键 */
+  if (sec.art && !s.arts.includes(sec.art)) s.arts.push(sec.art);
+}
+
+/* 统一授予功法（去重），并在授予后补发依赖型成就/奇遇钩子 */
+function grantArt(s, id) {
+  if (s.arts.includes(id)) return;
+  s.arts.push(id);
+  const a = ARTS.find(x => x.id === id);
+  const name = a ? a.name : id;
+  addLog(s, `习得功法《${name}》。`, "g");
+  toast(`习得《${name}》！`, "g");
+}
+
+/* 条件型功法统一发放：由各系统（战斗/洞府/炼丹/道侣/灵宠/成就/奇遇）在满足条件后调用，
+   仅校验该功法自身 condition，避免依赖隐式时序导致“看得见学不了”的死锁。
+   注意：剧情/宗门发放的功法（yinqi/jinfeng/taixu_dao/danxia·jindan/tianmo·xuemo）不在此列，
+   由对应剧情与 applySect 直接授予。 */
+function checkArtGrants(s) {
+  ARTS.forEach(a => {
+    if (s.arts.includes(a.id)) return;
+    if (!a.condition) return;
+    const c = a.condition;
+    let ok = true;
+    if (c.caveLingzhen != null && (s.cave.lingzhen || 0) < c.caveLingzhen) ok = false;
+    if (c.caveDantian != null && (s.cave.dantian || 0) < c.caveDantian) ok = false;
+    if (c.loverFav != null && !Object.values(s.lovers || {}).some(l => (l.fav || 0) >= c.loverFav)) ok = false;
+    if (c.zoneFights != null && (s.stat.zoneFights || 0) < c.zoneFights) ok = false;
+    if (c.alchemyOk != null && (s.stat.alchemyOk || 0) < c.alchemyOk) ok = false;
+    if (c.daoXinLt != null && !(s.daoXin < c.daoXinLt)) ok = false;
+    if (c.pet != null && s.pet !== c.pet) ok = false;
+    if (c.boss != null && !(s.bossKilled && s.bossKilled[c.boss])) ok = false;
+    if (c.achievements != null && s.achievements.length < c.achievements) ok = false;
+    if (c.ownedArts != null && s.arts.length < c.ownedArts) ok = false;
+    if (ok) grantArt(s, a.id);
+  });
+}
+
+/* ============================================================
+   五、存档 / 离线
+   ============================================================ */
+function save() {
+  if (!G) return;
+  try {
+    G.lastTick = nowSec();
+    localStorage.setItem(SAVE_KEY, JSON.stringify(G));
+  } catch (e) { }
+}
+function load() {
+  try {
+    const raw = localStorage.getItem(SAVE_KEY);
+    if (!raw) return null;
+    const s = JSON.parse(raw);
+    /* 补全新增字段 */
+    const base = newState(s.origin || "fei");
+    const merged = Object.assign({}, base, s);
+    merged.bonus = Object.assign({}, base.bonus, s.bonus || {});
+    merged.perm = Object.assign({}, base.perm, s.perm || {});
+    merged.stat = Object.assign({}, base.stat, s.stat || {});
+    merged.cave = Object.assign({}, base.cave, s.cave || {});
+    merged.settings = Object.assign({}, base.settings, s.settings || {});
+    merged.auto = Object.assign({}, base.auto, s.auto || {});
+    merged.equip = Object.assign({}, base.equip, s.equip || {});
+    merged.tokens = s.tokens || {};
+    return sanitize(merged);
+  } catch (e) { return null; }
+}
+function offlineSettle(s) {
+  const now = nowSec();
+  const elapsed = now - (s.lastTick || now);
+  if (elapsed < 60) return null;
+  /* 离线收益：先按真实秒数封顶 24 小时，再应用有效时间倍率 */
+  const mul = getTimeMultiplier(s);
+  const capped = Math.min(elapsed, OFFLINE_CAP_SEC);
+  const effSec = getOfflineEffectiveSec(elapsed, mul);
+  const gameDays = getGameDaysElapsed(effSec);
+  const before = s.realmIdx;
+  /* 离线修炼（100% 效率） */
+  const st = calcStats(s);
+  const gain = st.rate * effSec;
+  s.xiuwei += gain;
+  s.time += gameDays;
+  s.stat.totalCultivate += gain;
+  /* 离线不自动突破（自动突破已在开局取消，需玩家手动冲击境界） */
+  let breaks = 0;
+  /* 离线自动历练：按"每场战斗约 6 秒"折算场次，仅统计胜场收益 */
+  let fight = { battles: 0, wins: 0, money: 0, items: 0 };
+  if (s.auto.on) {
+    s._silent = true;
+    const zone = ZONES.find(z => z.id === s.zone) || ZONES[0];
+    const maxBattles = Math.floor(capped / 6);
+    const stNow = calcStats(s);
+    /* 用玩家当前战力与区域内怪物强度估算胜率 */
+    const zoneTier = clamp(zone.tier, 0, REALMS.length - 1);
+    const mon = REALMS[zoneTier];
+    const monAtk = mon.atk * 0.85, monHp = mon.hp, monDef = mon.def * 0.8;
+    const myDps = Math.max(1, stNow.atk * (1 - monDef / (monDef + stNow.atk * 1.8)));
+    const roundsToKill = Math.max(1, Math.ceil(monHp / myDps));
+    const foeDps = Math.max(1, monAtk * (1 - stNow.def / (stNow.def + monAtk * 1.8)));
+    const myRounds = Math.max(1, Math.ceil(stNow.hpMax / foeDps));
+    const winRate = clamp(roundsToKill < myRounds ? 0.92 : 0.92 * (myRounds / roundsToKill), 0.05, 0.95);
+    const capped2 = Math.min(maxBattles, 4000);   /* 单次结算上限，防极端数值 */
+    let money = 0, items = 0, wins = 0;
+    for (let i = 0; i < capped2; i++) {
+      if (Math.random() < winRate) {
+        wins++;
+        const t = clamp(zone.tier + ri(-1, 1), 0, 13);
+        money += Math.floor((20 + t * 45 + t * t * 12) * zone.drop * (1 + stNow.money) * (1 + stNow.expGain));
+        if (Math.random() < 0.14) items++;
+      }
+    }
+    s.money += money; s.stat.totalMoney += money; s.stat.battleMoney += money;
+    s.stat.battles += capped2; s.stat.wins += wins; s.stat.losses += (capped2 - wins);
+    s.stat.kills += wins;
+    s.stat.autoSold += items;                 /* 离线拾取的装备视作已自动变卖 */
+    fight = { battles: capped2, wins, money, items };
+    s._silent = false;
+  }
+  const st2 = calcStats(s);
+  s.hp = st2.hpMax; s.mp = st2.mpMax;
+  s.lastTick = now;
+  return { elapsed, capped, gain, breaks, before, after: s.realmIdx, fight };
+}
+/* ============================================================
+   六、UI 渲染
+   ============================================================ */
+let G = null;
+
+const TABS = [
+  { id: "cultivate", n: "修炼", i: "🧘" },
+  { id: "adventure", n: "历练", i: "⚔️" },
+  { id: "bag", n: "储物", i: "🎒" },
+  { id: "arts", n: "功法", i: "📜" },
+  { id: "alchemy", n: "丹道", i: "⚗️" },
+  { id: "cave", n: "洞府", i: "🏠" },
+  { id: "sect", n: "宗门", i: "🏯" },
+  { id: "lovers", n: "道侣", i: "💞" },
+  { id: "story", n: "剧情", i: "📖" },
+  { id: "achieve", n: "成就", i: "🏆" },
+  { id: "shop", n: "坊市", i: "🏮" },
+  { id: "settings", n: "设置", i: "⚙️" }
+];
+
+function render() {
+  if (!G) return;
+  const m = $("#main");
+  const keepTop = m.scrollTop;
+  const activeId = document.activeElement && document.activeElement.id;
+  const selStart = activeId ? document.activeElement.selectionStart : null;
+  renderTop();
+  renderTabs();
+  const fn = {
+    cultivate: viewCultivate, adventure: viewAdventure, bag: viewBag, arts: viewArts,
+    alchemy: viewAlchemy, cave: viewCave, sect: viewSect, lovers: viewLovers,
+    story: viewStory, achieve: viewAchieve, shop: viewShop, settings: viewSettings
+  }[G.tab] || viewCultivate;
+  m.innerHTML = fn();
+  m.scrollTop = keepTop;
+  if (activeId) {
+    const el = document.getElementById(activeId);
+    if (el) { el.focus(); try { if (selStart != null) el.setSelectionRange(selStart, selStart); } catch (e) { } }
+  }
+}
+/* 轻量刷新：只更新顶栏数值；主区域节流重建（保持滚动与焦点） */
+function renderLight() {
+  if (!G) return;
+  renderTop();
+  const ae = document.activeElement;
+  if (ae && (ae.tagName === "INPUT" || ae.tagName === "TEXTAREA")) return;
+  render();
+}
+function renderTop() {
+  const s = G, st = calcStats(s), ri2 = realmInfo(s.realmIdx);
+  const need = needXiuwei(s.realmIdx);
+  const p = clamp(s.xiuwei / need, 0, 1);
+  const root = ROOTS.find(r => r.id === s.root) || ROOTS[0];
+  const sec = s.sect ? SECTS.find(x => x.id === s.sect) : null;
+  const dxCls = s.daoXin >= 70 ? "jade" : s.daoXin >= 35 ? "gold" : "blood";
+  $("#topbar").innerHTML = `
+    <div class="tb-row">
+      <span class="tb-name">${s.name}</span>
+      <span class="tb-realm">${ri2.icon} ${ri2.name}</span>
+      <span class="tb-org">${root.name}${sec ? " · " + sec.icon + sec.name + (s.sectRank > 0 ? "（" + SECT_RANKS[s.sectRank] + "）" : "") : " · 散修"}</span>
+      <span class="tb-spacer"></span>
+      <span class="tb-time">${s.phase === "mortal" ? mortalDate(s.time) : gameDate(s.time)}</span>
+      <button class="btn sm tb-new" data-act="newGame" title="删除旧存档，开创新一世">🔄 新游戏</button>
+    </div>
+    <div class="tb-attr">
+      <span>灵石 <b class="gold">${fmt(s.money)}</b></span>
+      <span>灵草 <b class="jade">${fmt(s.herbs)}</b></span>
+      <span>攻击 <b>${fmt(st.atk)}</b></span>
+      <span>防御 <b>${fmt(st.def)}</b></span>
+      <span>气血 <b>${fmt(s.hp)}</b>/${fmt(st.hpMax)}</span>
+      <span>道心 <b class="${dxCls}">${Math.floor(s.daoXin)}</b><span class="dao-xin-bar"><i style="width:${clamp(s.daoXin, 0, 100)}%"></i></span></span>
+      <span>声望 <b>${fmt(s.reputation)}</b></span>
+      <span>气运 <b>${fmt(s.luck)}</b></span>
+    </div>
+    <div class="xiuwei-wrap">
+      <div class="xiuwei-top">
+        <span>修为 · ${s.realmIdx >= MAX_INDEX ? "已至巅峰" : "距离「" + realmInfo(Math.min(s.realmIdx + 1, MAX_INDEX)).name + "」"}</span>
+        <span class="num">${fmt(s.xiuwei)} / ${s.realmIdx >= MAX_INDEX ? "∞" : fmt(need)}（${(p * 100).toFixed(1)}%）</span>
+      </div>
+      <div class="bar xp"><i style="width:${p * 100}%"></i></div>
+    </div>`;
+}
+function renderTabs() {
+  $("#tabs").innerHTML = TABS.map(t => {
+    let dot = "";
+    if (t.id === "story" && G.storyQueue.length) dot = '<span class="dot"></span>';
+    if (t.id === "cultivate" && G.xiuwei >= needXiuwei(G.realmIdx) && G.realmIdx < MAX_INDEX) dot = '<span class="dot"></span>';
+    return `<button class="tab ${G.tab === t.id ? "on" : ""}" data-tab="${t.id}"><span class="ic">${t.i}</span>${t.n}${dot}</button>`;
+  }).join("");
+}
+
+/* ---------- 修炼 ---------- */
+function viewCultivate() {
+  const s = G, st = calcStats(s);
+  const need = needXiuwei(s.realmIdx);
+  const atEnd = isStageEnd(s);
+  const can = s.xiuwei >= need && !atEnd;
+  const chance = atEnd ? 0 : breakChance(s);
+  const pill = s.pendingPill && s.pills[s.pendingPill] ? PILLS.find(p => p.id === s.pendingPill) : null;
+  const buffs = s.buffs.filter(b => b.k === "rate");
+  const mul = 1 + buffs.reduce((a, b) => a + b.v, 0);
+  const tm = getTimeMultiplier(s);
+  const tmTxt = tm === 1 ? "" : `（开发加速 ×${tm}）`;
+  return `
+  <div class="panel">
+    <div class="panel-t">🧘 打坐修炼<span class="sub">1 游戏日 = ${REAL_SEC_PER_GAME_DAY / 60} 现实分钟${tmTxt}</span></div>
+    <div class="grid g2">
+      <div class="card">
+        <div class="card-t">当前境界</div>
+        <div class="kv"><span class="k">境界</span><span class="v">${realmInfo(s.realmIdx).icon} ${realmInfo(s.realmIdx).name}</span></div>
+        <div class="kv"><span class="k">修炼速度</span><span class="v jade">${fmt(st.rate)} 修为 / 秒</span></div>
+        <div class="kv"><span class="k">加成合计</span><span class="v gold">+${(st.addRate * 100).toFixed(1)}%<span class="tiny">（功法 ${(st.artRate * 100).toFixed(1)}% · 洞府 ${(st.caveRate * 100).toFixed(1)}%）</span></span></div>
+        <div class="kv"><span class="k">灵根</span><span class="v ${ROOTS.find(r => r.id === s.root).tag}">${ROOTS.find(r => r.id === s.root).name} +${Math.round(Math.min(ROOTS.find(r => r.id === s.root).mul - 1, 1) * 100)}%（修行速度加成，封顶 +100%）</span></div>
+        <div class="kv"><span class="k">本境剩余</span><span class="v">约 ${hhmmss((need - s.xiuwei) / Math.max(1e-9, st.rate * tm))}</span></div>
+      </div>
+      <div class="card">
+        <div class="card-t">突破</div>
+        <div class="card-d">
+          ${isStageEnd(s) ? "<span class='gold'>已至化神圆满，此界前路已尽。存档保留，静待天门再开。</span>" :
+        `突破成功率 <b class="${chance > 0.7 ? "jade" : chance > 0.45 ? "gold" : "blood"}">${pct(chance)}</b><br>
+             <span class="tiny">道心、气运、丹药与功法皆可提升成功率。失败将损失修为，甚至跌落境界。</span>`}
+        </div>
+        <div class="prog-mini"><i style="width:${clamp(s.xiuwei / need, 0, 1) * 100}%"></i></div>
+        <div class="card-a">
+          ${isStageEnd(s)
+      ? `<button class="btn" data-act="stageEnd">🌊 回看阶段结局</button>`
+      : `<button class="btn pri" data-act="break" ${can ? "" : "disabled"}>${can ? "⚡ 冲击境界" : "修为不足"}</button>`}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="panel-t">⚡ 突破辅助</div>
+    <div class="grid g3">
+      ${PILLS.filter(p => p.breakAdd).map(p => {
+        const have = s.pills[p.id] || 0;
+        const on = s.pendingPill === p.id;
+        return `<div class="card ${on ? "sel" : ""}">
+          <div class="card-t">${p.icon} ${p.name} <span class="tag y">×${have}</span></div>
+          <div class="card-d">${p.desc}</div>
+          <div class="card-a">
+            <button class="btn sm ${on ? "pri" : ""}" data-act="setPill" data-id="${p.id}" ${have ? "" : "disabled"}>${on ? "已选用" : "选用"}</button>
+            ${on ? `<button class="btn sm" data-act="setPill" data-id="">取消</button>` : ""}
+          </div>
+        </div>`;
+      }).join("")}
+    </div>
+    ${pill ? `<div class="tiny" style="margin-top:8px">已选用 <span class="gold">${pill.name}</span>，突破时自动消耗。</div>` : ""}
+  </div>
+  <div class="panel">
+    <div class="panel-t">📜 修行札记</div>
+    <div class="log">${s.log.slice(0, 40).map(l => `<div><span class="t">${l.t}</span><span class="${l.cls}">${l.txt}</span></div>`).join("") || '<div class="tiny">尚无记录。</div>'}</div>
+  </div>`;
+}
+
+/* ---------- 历练 ---------- */
+const AUTO_SPEEDS = [
+  { v: 1, n: "慢" }, { v: 2, n: "标准" }, { v: 4, n: "快" }, { v: 8, n: "极速" }, { v: 20, n: "闪电" }
+];
+function viewAdventure() {
+  const s = G, a = s.auto;
+  const zone = ZONES.find(z => z.id === s.zone) || ZONES[0];
+  const st = calcStats(s);
+  const zoneLocked = s.realmIdx < majorStart(zone.req);
+  /* 战斗进行中：自动模式显示战况面板，手动模式显示战斗界面 */
+  const battlePanel = s.battle ? (a.on ? battleInline() : viewBattle()) : "";
+  return `
+  <div class="panel">
+    <div class="panel-t">🤖 全自动历练
+      <span class="sub">${a.on ? "运行中" : "已停止"}</span>
+    </div>
+    <div class="grid g2">
+      <div class="card ${a.on ? "sel" : ""}">
+        <div class="card-t">${a.on ? "▶️ 自动战斗中" : "⏸️ 未开始"}</div>
+        <div class="card-d">
+          ${a.on
+      ? `正在 <b class="gold">${zone.icon} ${zone.name}</b> 中自动历练。<br>
+               <span class="tiny">气血充足时自动开战，不足时自动打坐疗伤；战利品自动换装与变卖。</span>`
+      : `开启后，将自动连续挑战妖兽、自动疗伤、自动服药、自动整理战利品。<br>
+               <span class="tiny">你只需偶尔回来看看收获。</span>`}
+        </div>
+        <div class="card-a">
+          <button class="btn ${a.on ? "danger" : "pri"}" data-act="toggleAuto">${a.on ? "⏹ 停止自动" : "▶️ 开始自动历练"}</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-t">⚙️ 自动策略</div>
+        <div style="font-size:13px;color:var(--txt2);padding:5px 0 7px;border-bottom:1px dashed rgba(58,70,88,.45)">
+          战斗节奏
+          <span style="display:inline-flex;gap:4px;margin-left:6px;vertical-align:middle">
+            ${AUTO_SPEEDS.map(x => `<button class="btn sm ${a.speed === x.v ? "pri" : ""}" data-act="autoSpeed" data-v="${x.v}">${x.n}</button>`).join("")}
+          </span>
+        </div>
+        <div class="kv"><span class="k">自动挑战首领</span><span class="v"><button class="btn sm ${a.boss ? "pri" : ""}" data-act="autoCfg" data-k="boss">${a.boss ? "开" : "关"}</button></span></div>
+        <div class="kv"><span class="k">自动服丹（气血 ${(a.pillHp * 100) | 0}% 以下）</span><span class="v"><button class="btn sm ${a.pill ? "pri" : ""}" data-act="autoCfg" data-k="pill">${a.pill ? "开" : "关"}</button></span></div>
+        <div class="kv"><span class="k">自动遁走（气血 ${(a.fleeHp * 100) | 0}% 以下）</span><span class="v"><button class="btn sm ${a.fleeHp > 0 ? "pri" : ""}" data-act="cycleFlee">${a.fleeHp > 0 ? "开" : "关"}</button></span></div>
+        <div class="kv"><span class="k">自动换装</span><span class="v"><button class="btn sm ${a.equip ? "pri" : ""}" data-act="autoCfg" data-k="equip">${a.equip ? "开" : "关"}</button></span></div>
+        <div class="kv"><span class="k">自动前往最佳区域</span><span class="v"><button class="btn sm ${a.autoZone ? "pri" : ""}" data-act="autoCfg" data-k="autoZone">${a.autoZone ? "开" : "关"}</button></span></div>
+        <div class="kv"><span class="k">自动变卖 ${TIER_NAME[a.sellTier - 1]}以下</span><span class="v"><button class="btn sm ${a.sell ? "pri" : ""}" data-act="autoCfg" data-k="sell">${a.sell ? "开" : "关"}</button></span></div>
+        ${(a.pill && !(s.pills["huiqi"] > 0)) ? `<div class="tiny blood" style="margin-top:7px">⚠️ 没有回气丹了，自动服丹无法生效。请到坊市补充。</div>` : ""}
+      </div>
+    </div>
+  </div>
+  ${battlePanel}
+  <div class="panel">
+    <div class="panel-t">📊 自动战斗统计<span class="sub">本次修行累计</span></div>
+    <div class="grid g2">
+      <div>
+        <div class="kv"><span class="k">战斗场次</span><span class="v">${fmt(s.stat.battles)}</span></div>
+        <div class="kv"><span class="k">胜 / 负</span><span class="v"><span class="jade">${fmt(s.stat.wins)}</span> / <span class="blood">${fmt(s.stat.losses)}</span></span></div>
+        <div class="kv"><span class="k">胜率</span><span class="v">${s.stat.wins + s.stat.losses ? pct(s.stat.wins / (s.stat.wins + s.stat.losses)) : "—"}</span></div>
+        <div class="kv"><span class="k">遁走次数</span><span class="v">${fmt(s.stat.flees)}</span></div>
+      </div>
+      <div>
+        <div class="kv"><span class="k">战斗所得灵石</span><span class="v gold">${fmt(s.stat.battleMoney)}</span></div>
+        <div class="kv"><span class="k">自动变卖法宝</span><span class="v">${fmt(s.stat.autoSold)} 件</span></div>
+        <div class="kv"><span class="k">击杀妖兽</span><span class="v">${fmt(s.stat.kills)}</span></div>
+        <div class="kv"><span class="k">本地进度</span><span class="v">${s.zoneProgress} 场</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="panel-t">🗺️ 历练之地<span class="sub">切换区域后自动战斗将前往新地点</span></div>
+    <div class="scroll-x">
+      ${ZONES.map(z => {
+    const locked = s.realmIdx < majorStart(z.req);
+    return `<button class="chip ${s.zone === z.id ? "on" : ""}" data-act="setZone" data-id="${z.id}" ${locked ? "disabled style='opacity:.4'" : ""}>${z.icon} ${z.name}${s.bossKilled[z.id] ? " ✔" : ""}</button>`;
+  }).join("")}
+    </div>
+    <div class="hr"></div>
+    <div class="grid g2">
+      <div class="card">
+        <div class="card-t">${zone.icon} ${zone.name}</div>
+        <div class="card-d">${zone.desc}</div>
+        <div class="kv"><span class="k">推荐境界</span><span class="v">${REALMS[clamp(zone.tier, 0, REALMS.length - 1)].name}境</span></div>
+        <div class="kv"><span class="k">掉落倍率</span><span class="v gold">×${zone.drop.toFixed(2)}</span></div>
+        <div class="kv"><span class="k">本地首领</span><span class="v">${zone.boss.i} ${zone.boss.n} ${s.bossKilled[zone.id] ? '<span class="jade">已讨伐</span>' : ""}</span></div>
+      </div>
+      <div class="card">
+        <div class="card-t">🗡️ 我的战力</div>
+        <div class="card-d">
+          攻击 <b>${fmt(st.atk)}</b> · 防御 <b>${fmt(st.def)}</b><br>
+          气血 <b>${fmt(st.hpMax)}</b> · 暴击 <b>${pct(st.crit)}</b> · 闪避 <b>${pct(st.dodge)}</b>
+          ${st.lifesteal > 0 ? `<br>吸血 <b>${pct(st.lifesteal)}</b>` : ""}
+        </div>
+        <div class="card-a">
+          <button class="btn sm" data-act="adventure" data-mode="field">⚔️ 手动打一场</button>
+          <button class="btn sm danger" data-act="adventure" data-mode="boss">👹 手动挑战首领</button>
+        </div>
+        ${zoneLocked ? `<div class="tiny blood" style="margin-top:6px">境界不足，此地凶险。</div>` : ""}
+      </div>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="panel-t">🎲 随机奇遇</div>
+    <div class="card-d">行走江湖，机缘与凶险并存。点击下方按钮主动触发一次奇遇（每次消耗 10 灵石路费）。</div>
+    <div class="card-a"><button class="btn" data-act="event" ${s.money < 10 ? "disabled" : ""}>🎲 探寻机缘（10 灵石）</button></div>
+  </div>`;
+}
+/* 自动模式下嵌入页面的紧凑战况（不占满屏，避免打断仪表盘） */
+function battleInline() {
+  const s = G, b = s.battle, st = calcStats(s), foe = b.foe;
+  const php = clamp(s.hp / st.hpMax, 0, 1), fhp = clamp(foe.hp / foe.hpMax, 0, 1);
+  const recent = b.log.slice(-9);
+  return `
+  <div class="panel">
+    <div class="panel-t">⚔️ 实时战况
+      <span class="sub">第 ${b.round} 回合 · ${b.kind === "boss" ? "首领战" : "遭遇战"} · ×${s.auto.speed} 速</span>
+    </div>
+    <div class="battle-stage" style="padding:2px 0 8px">
+      <div class="battle-vs">
+        <div class="fighter">
+          <div class="av" style="font-size:26px">🧘</div>
+          <div class="nm gold" style="font-size:12px">${s.name}</div>
+          <div class="bar hp"><i style="width:${php * 100}%"></i></div>
+          <div class="hpn">${fmt(s.hp)} / ${fmt(st.hpMax)}</div>
+        </div>
+        <div class="tiny">VS</div>
+        <div class="fighter">
+          <div class="av" style="font-size:26px">${foe.icon}</div>
+          <div class="nm blood" style="font-size:12px">${foe.name}</div>
+          <div class="bar hp"><i style="width:${fhp * 100}%"></i></div>
+          <div class="hpn">${fmt(Math.max(0, foe.hp))} / ${fmt(foe.hpMax)}</div>
+        </div>
+      </div>
+    </div>
+    <div class="battle-log" style="height:118px">${recent.map(l => `<div class="${l.cls}">${l.txt}</div>`).join("")}</div>
+  </div>`;
+}
+function viewBattle() {
+  const s = G, b = s.battle, st = calcStats(s), foe = b.foe;
+  const php = clamp(s.hp / st.hpMax, 0, 1), fhp = clamp(foe.hp / foe.hpMax, 0, 1);
+  const pills = Object.keys(s.pills).filter(k => PILLS.find(p => p.id === k));
+  return `
+  <div class="panel">
+    <div class="panel-t">⚔️ 战斗中<span class="sub">第 ${b.round} 回合 · ${b.kind === "boss" ? "首领战" : "遭遇战"}</span></div>
+    <div class="battle-stage">
+      <div class="battle-vs">
+        <div class="fighter">
+          <div class="av">🧘</div>
+          <div class="nm gold">${s.name}</div>
+          <div class="bar hp"><i style="width:${php * 100}%"></i></div>
+          <div class="hpn">${fmt(s.hp)} / ${fmt(st.hpMax)}</div>
+        </div>
+        <div class="tiny">VS</div>
+        <div class="fighter">
+          <div class="av">${foe.icon}</div>
+          <div class="nm blood">${foe.name}</div>
+          <div class="bar hp"><i style="width:${fhp * 100}%"></i></div>
+          <div class="hpn">${fmt(Math.max(0, foe.hp))} / ${fmt(foe.hpMax)}</div>
+        </div>
+      </div>
+    </div>
+    <div class="battle-log">${b.log.map(l => `<div class="${l.cls}">${l.txt}</div>`).join("")}</div>
+    <div class="hr"></div>
+    <div class="btn-row">
+      <button class="btn" data-act="battleRound">▶ 继续（自动进行）</button>
+      ${pills.map(k => {
+    const p = PILLS.find(x => x.id === k);
+    return `<button class="btn sm" data-act="battlePill" data-id="${k}" ${p.battle ? "" : "disabled"}>${p.icon} ${p.name} ×${s.pills[k]}</button>`;
+  }).join("")}
+      <button class="btn danger sm" data-act="flee">🏃 遁走</button>
+    </div>
+    <div class="tiny" style="margin-top:6px">战斗自动进行，你也可以服用丹药或遁走。</div>
+  </div>`;
+}
+
+/* ---------- 储物 ---------- */
+function viewBag() {
+  const s = G, st = calcStats(s);
+  const bag = s.bag.slice().sort((a, b) => equipScore(b) - equipScore(a));
+  return `
+  <div class="panel">
+    <div class="panel-t">🥋 已装备</div>
+    <div class="grid g2">
+      ${SLOTS.map(sl => {
+    const e = s.equip[sl.id];
+    return `<div class="card">
+          <div class="card-t">${sl.icon} ${sl.name}</div>
+          ${e ? `<div class="card-d"><span class="q${e.tier}">${e.qname}</span><br>${statLine(e.stats)}</div>
+            <div class="card-a"><span class="tag">战力 ${fmt(equipScore(e))}</span><button class="btn sm" data-act="unequip" data-slot="${sl.id}">卸下</button></div>`
+        : `<div class="card-d tiny">空</div>`}
+        </div>`;
+  }).join("")}
+    </div>
+  </div>
+  <div class="panel">
+    <div class="panel-t">🎒 储物袋<span class="sub">${s.bag.length} 件</span></div>
+    <div class="flex" style="margin-bottom:8px">
+      <button class="btn sm" data-act="autoEquip">⚡ 一键最优装备</button>
+      <button class="btn sm danger" data-act="sellJunk">🗑️ 卖出所有低阶（玄阶以下）</button>
+    </div>
+    <div class="grid g3">
+      ${bag.length ? bag.map(e => {
+    const cur = s.equip[e.slot];
+    const better = equipScore(e) > equipScore(cur);
+    return `<div class="card">
+          <div class="card-t"><span class="q${e.tier}">${e.qname}</span>${better ? ' <span class="tag g">更优</span>' : ""}</div>
+          <div class="card-d">${statLine(e.stats)}<br><span class="tiny">部位：${SLOTS.find(x => x.id === e.slot).name} · 战力 ${fmt(equipScore(e))}</span></div>
+          <div class="card-a">
+            <button class="btn sm ${better ? "pri" : ""}" data-act="equip" data-uid="${e.uid}">装备</button>
+            <button class="btn sm" data-act="sell" data-uid="${e.uid}">卖 ${fmt(e.price)}</button>
+          </div>
+        </div>`;
+  }).join("") : '<div class="empty">储物袋空空如也。</div>'}
+    </div>
+  </div>
+  <div class="panel">
+    <div class="panel-t">💊 丹药</div>
+    <div class="grid g3">
+      ${Object.keys(s.pills).length ? Object.keys(s.pills).map(k => {
+    const p = PILLS.find(x => x.id === k); if (!p) return "";
+    return `<div class="card">
+          <div class="card-t">${p.icon} ${p.name} <span class="tag y">×${s.pills[k]}</span></div>
+          <div class="card-d">${p.desc}</div>
+          <div class="card-a">${p.buff ? `<button class="btn sm" data-act="usePill" data-id="${k}">服用</button>` : ""}${p.perm ? `<button class="btn sm" data-act="usePill" data-id="${k}">服用</button>` : ""}</div>
+        </div>`;
+  }).join("") : '<div class="empty">尚无丹药。</div>'}
+    </div>
+  </div>`;
+}
+function statLine(st) {
+  const N = { atk: "攻击", def: "防御", hp: "气血", crit: "暴击", dodge: "闪避", lifesteal: "吸血" };
+  return Object.keys(st).map(k => {
+    const v = st[k];
+    const isP = ["crit", "dodge", "lifesteal"].includes(k);
+    return `<span class="tag ${isP ? "p" : "b"}">${N[k] || k} +${isP ? (v * 100).toFixed(1) + "%" : fmt(v)}</span>`;
+  }).join(" ");
+}
+
+/* ---------- 功法 ---------- */
+function viewArts() {
+  const s = G;
+  const st = calcStats(s);
+  return `
+  <div class="panel">
+    <div class="panel-t">📜 已习功法<span class="sub">${s.arts.length} / ${ARTS.length} 门</span></div>
+    <div class="grid g2">
+      ${s.arts.length ? s.arts.map(id => {
+    const a = ARTS.find(x => x.id === id); if (!a) return "";
+    return `<div class="card">
+          <div class="card-t">${a.icon} ${a.name} <span class="tag ${TIER_CLS[a.tier] ? "y" : ""}">${TIER_NAME[a.tier]}</span></div>
+          <div class="card-d">${a.desc}<br><span class="tiny">类型：${ART_TYPE_CN[a.type] || a.type} · 来源：${ART_CHANNEL_CN[a.channel] || a.channel}</span></div>
+          <div class="card-a">${effTags(a.effects)}</div>
+        </div>`;
+  }).join("") : '<div class="empty">尚未习得任何功法。</div>'}
+    </div>
+  </div>
+  <div class="panel">
+    <div class="panel-t">🏯 功法阁<span class="sub">达境界显形 · 渠道 / 贡献 / 灵石获取</span></div>
+    <div class="grid g3">
+      ${ARTS.filter(a => !s.arts.includes(a.id)).map(a => {
+    const revealed = s.realmIdx >= majorStart(a.revealAt);          /* 达 revealAt 境界才显形 */
+    const costTag = artCostTag(a, s);
+    const condTag = artCondTag(a, s);
+    const canLearn = revealed && costTag.ok && condTag.ok;
+    const realmTag = a.revealAt > 0 ? `<span class="tag ${revealed ? "g" : "r"}">需 ${REALMS[a.revealAt].name}境显形</span>` : "";
+    return `<div class="card ${revealed ? "" : "dim"}">
+          <div class="card-t">${a.icon} ${a.name} <span class="tag ${TIER_CLS[a.tier]}">${TIER_NAME[a.tier]}</span></div>
+          <div class="card-d">${a.desc}<br><span class="tiny">类型：${ART_TYPE_CN[a.type] || a.type} · 来源：${ART_CHANNEL_CN[a.channel] || a.channel}</span></div>
+          <div class="card-a">${revealed ? effTags(a.effects) : '<span class="tiny">尚未显形</span>'}</div>
+          <div class="card-a">
+            ${realmTag}
+            <span class="tag ${costTag.ok ? "g" : "r"}">${costTag.txt}</span>
+            ${condTag.txt ? `<span class="tag ${condTag.ok ? "g" : "r"}">${condTag.txt}</span>` : ""}
+            <button class="btn sm pri" data-act="learnArt" data-id="${a.id}" ${canLearn ? "" : "disabled"}>修习</button>
+          </div>
+        </div>`;
+  }).join("") || '<div class="empty">已尽得天下功法。</div>'}
+    </div>
+  </div>`;
+}
+/* 功法获取消耗标签：{ contrib:N } 宗门贡献 / { spirit:N } 灵石 / 0 或空 = 条件/自动 */
+function artCostTag(a, s) {
+  if (!a.cost) return { ok: true, txt: "条件获取" };
+  if (a.cost.contrib != null) return { ok: s.contrib >= a.cost.contrib, txt: `宗门贡献 ${fmt(a.cost.contrib)}` };
+  if (a.cost.spirit != null) return { ok: s.money >= a.cost.spirit, txt: `灵石 ${fmt(a.cost.spirit)}` };
+  return { ok: true, txt: "免费" };
+}
+/* 功法获取前置条件（非 sect/shop 渠道）；只展示，授予由对应系统校验 */
+function artCondTag(a, s) {
+  const c = a.condition; if (!c) return { ok: true, txt: "" };
+  if (c.caveLingzhen != null) return { ok: s.cave.lingzhen >= c.caveLingzhen, txt: `聚灵阵 Lv${c.caveLingzhen}` };
+  if (c.caveDantian != null) return { ok: (s.cave.dantian || 0) >= c.caveDantian, txt: `丹房 Lv${c.caveDantian}` };
+  if (c.loverFav != null) return { ok: Object.values(s.lovers || {}).some(l => (l.fav || 0) >= c.loverFav), txt: `道侣好感≥${c.loverFav}` };
+  if (c.zoneFights != null) return { ok: (s.stat.zoneFights || 0) >= c.zoneFights, txt: `历练${c.zoneFights}场` };
+  if (c.alchemyOk != null) return { ok: (s.stat.alchemyOk || 0) >= c.alchemyOk, txt: `炼丹${c.alchemyOk}次` };
+  if (c.daoXinLt != null) return { ok: s.daoXin < c.daoXinLt, txt: `道心<${c.daoXinLt}` };
+  if (c.pet != null) return { ok: s.pet === c.pet, txt: `需灵宠` };
+  if (c.boss != null) return { ok: !!(s.bossKilled && s.bossKilled[c.boss]), txt: `击败首领` };
+  if (c.achievements != null) return { ok: s.achievements.length >= c.achievements, txt: `成就${c.achievements}项` };
+  if (c.ownedArts != null) return { ok: s.arts.length >= c.ownedArts, txt: `习得${c.ownedArts}门` };
+  return { ok: true, txt: "" };
+}
+function effTags(effects) {
+  const N = { atk: "攻击", def: "防御", hp: "气血", mp: "真气", crit: "暴击", dodge: "闪避", lifesteal: "吸血", cultivationRate: "修炼速度", breakRate: "突破率", alchemy: "炼丹", money: "灵石收益", speed: "身法", expGain: "历练收益", luck: "气运", pillDaily: "每日丹药" };
+  return Object.keys(effects).map(k => {
+    const v = effects[k];
+    const isP = k !== "speed" && k !== "pillDaily" && k !== "luck";   /* 这些按整数展示 */
+    return `<span class="tag ${v > 0 ? "g" : "r"}">${N[k] || k} ${v > 0 ? "+" : ""}${isP ? (v * 100).toFixed(0) + "%" : v}</span>`;
+  }).join(" ");
+}
+
+/* ---------- 丹道 ---------- */
+function viewAlchemy() {
+  const s = G, st = calcStats(s);
+  return `
+  <div class="panel">
+    <div class="panel-t">⚗️ 丹炉<span class="sub">灵草：${fmt(s.herbs)} 株</span></div>
+    <div class="card-d">炼丹有失败之虞，失败将损耗部分灵草。丹道修为（洞府丹房等级与功法）可提升成功率。</div>
+    <div class="hr"></div>
+    <div class="grid g3">
+      ${RECIPES.map(r => {
+    const p = PILLS.find(x => x.id === r.out);
+    const rate = clamp(r.diff + st.alchemy, 0.05, 0.99);
+    const can = s.herbs >= r.herbs && s.money >= r.money && s.realmIdx >= majorStart(r.req);
+    return `<div class="card">
+          <div class="card-t">${p.icon} ${p.name} <span class="tag ${TIER_CLS[p.tier]}">${TIER_NAME[p.tier]}</span></div>
+          <div class="card-d">${p.desc}<br><span class="tiny">材料：灵草 ×${r.herbs}、灵石 ×${fmt(r.money)}</span></div>
+          <div class="card-a">
+            <span class="tag ${rate > 0.7 ? "g" : rate > 0.45 ? "y" : "r"}">成功率 ${pct(rate)}</span>
+            ${r.req > 0 ? `<span class="tag ${s.realmIdx >= majorStart(r.req) ? "g" : "r"}">需 ${REALMS[r.req].name}境</span>` : ""}
+            <button class="btn sm pri" data-act="alchemy" data-id="${r.out}" ${can ? "" : "disabled"}>炼制</button>
+          </div>
+        </div>`;
+  }).join("")}
+    </div>
+  </div>
+  <div class="panel">
+    <div class="panel-t">📊 丹道统计</div>
+    <div class="kv"><span class="k">成功次数</span><span class="v jade">${s.stat.alchemyOk}</span></div>
+    <div class="kv"><span class="k">失败次数</span><span class="v blood">${s.stat.alchemyFail}</span></div>
+    <div class="kv"><span class="k">丹道加成</span><span class="v gold">+${pct(st.alchemy)}</span></div>
+  </div>`;
+}
+
+/* ---------- 洞府 ---------- */
+const CAVE_FAC = [
+  { id: "lingzhen", n: "聚灵阵", i: "🔷", d: "汇聚天地灵气，提升修炼速度。", eff: lv => `修炼速度 +${(lv * 3)}%`, cost: lv => Math.floor(200 * Math.pow(1.65, lv)) },
+  { id: "dantian", n: "丹房", i: "⚗️", d: "改良丹炉火候，提升炼丹成功率。", eff: lv => `炼丹成功率 +${(lv * 3)}%`, cost: lv => Math.floor(300 * Math.pow(1.7, lv)) },
+  { id: "waimen", n: "外门产业", i: "🏪", d: "经营凡俗产业，增加灵石收益。", eff: lv => `灵石收益 +${(lv * 4)}%`, cost: lv => Math.floor(250 * Math.pow(1.6, lv)) }
+];
+function viewCave() {
+  const s = G;
+  return `
+  <div class="panel">
+    <div class="panel-t">🏠 洞府<span class="sub">灵石：${fmt(s.money)}</span></div>
+    <div class="card-d">洞府是你修行之所。升级设施可获得永久加成，且离线时依然生效。</div>
+    <div class="hr"></div>
+    <div class="grid g3">
+      ${CAVE_FAC.map(f => {
+    const lv = s.cave[f.id], cost = f.cost(lv);
+    const can = s.money >= cost;
+    return `<div class="card">
+          <div class="card-t">${f.i} ${f.n} <span class="tag y">Lv.${lv}</span></div>
+          <div class="card-d">${f.d}<br><span class="jade">当前：${f.eff(lv)}</span>${lv < 30 ? `<br><span class="tiny">下一级：${f.eff(lv + 1)}</span>` : ""}</div>
+          <div class="card-a">
+            <span class="tag ${can ? "y" : "r"}">${fmt(cost)} 灵石</span>
+            <button class="btn sm pri" data-act="upCave" data-id="${f.id}" ${can && lv < 30 ? "" : "disabled"}>升级</button>
+          </div>
+        </div>`;
+  }).join("")}
+    </div>
+  </div>
+  <div class="panel">
+    <div class="panel-t">🐉 灵宠</div>
+    ${s.pet ? (() => {
+    const p = PETS.find(x => x.id === s.pet);
+    const cost = Math.floor(p.cost * 0.3 * Math.pow(1.45, s.petLv));
+    return `<div class="grid g2">
+        <div class="card">
+          <div class="card-t">${p.icon} ${p.name} <span class="tag y">Lv.${s.petLv}</span></div>
+          <div class="card-d">${p.desc}<br><span class="gold">${p.skill}</span></div>
+          <div class="card-a">${effTags(p.stat)}</div>
+        </div>
+        <div class="card">
+          <div class="card-t">培养</div>
+          <div class="card-d">消耗灵石提升灵宠等级，其天赋加成将随之增长。</div>
+          <div class="card-a">
+            <span class="tag y">${fmt(cost)} 灵石</span>
+            <button class="btn sm pri" data-act="upPet" ${s.money >= cost ? "" : "disabled"}>喂养升级</button>
+          </div>
+        </div>
+      </div>`;
+  })() : `<div class="grid g3">
+      ${PETS.map(p => `<div class="card">
+        <div class="card-t">${p.icon} ${p.name}</div>
+        <div class="card-d">${p.desc}<br><span class="gold">${p.skill}</span></div>
+        <div class="card-a">${effTags(p.stat)}</div>
+        <div class="card-a">
+          <span class="tag ${s.money >= p.cost ? "y" : "r"}">${fmt(p.cost)} 灵石</span>
+          <button class="btn sm pri" data-act="buyPet" data-id="${p.id}" ${s.money >= p.cost ? "" : "disabled"}>结契</button>
+        </div>
+      </div>`).join("")}
+    </div>`}
+  </div>`;
+}
+
+/* ---------- 宗门 ---------- */
+function viewSect() {
+  const s = G;
+  const sec = s.sect ? SECTS.find(x => x.id === s.sect) : null;
+  const nextContrib = SECT_CONTRIB[Math.min(s.sectRank + 1, SECT_CONTRIB.length - 1)];
+  const tasks = [
+    { n: "采集灵草", i: "🌿", cost: 0, gain: 8, herbs: [2, 5], rep: 1 },
+    { n: "巡视山门", i: "🛡️", cost: 0, gain: 15, herbs: [0, 1], rep: 2 },
+    { n: "清剿妖兽", i: "⚔️", cost: 0, gain: 30, herbs: [1, 3], rep: 4 },
+    { n: "护送商队", i: "🐎", cost: 0, gain: 60, herbs: [0, 2], rep: 6 },
+    { n: "镇守边关", i: "🏰", cost: 0, gain: 120, herbs: [2, 6], rep: 10 }
+  ];
+  return `
+  <div class="panel">
+    <div class="panel-t">🏯 ${sec ? sec.icon + " " + sec.name : "宗门"}</div>
+    ${sec ? `
+      <div class="card-d">${sec.desc}</div>
+      <div class="hr"></div>
+      <div class="kv"><span class="k">身份</span><span class="v gold">${SECT_RANKS[s.sectRank]}</span></div>
+      <div class="kv"><span class="k">宗门贡献</span><span class="v jade">${fmt(s.contrib)}${s.sectRank < SECT_RANKS.length - 1 ? ` / ${fmt(nextContrib)}` : "（已至顶阶）"}</span></div>
+      <div class="kv"><span class="k">宗门加成</span><span class="v">${sec.bonusTxt}</span></div>
+      ${s.sectRank < SECT_RANKS.length - 1 ? `<div class="prog-mini"><i style="width:${clamp(s.contrib / nextContrib, 0, 1) * 100}%"></i></div>
+      <div class="card-a" style="margin-top:8px"><button class="btn pri" data-act="promote" ${s.contrib >= nextContrib ? "" : "disabled"}>⬆️ 晋升 ${SECT_RANKS[s.sectRank + 1]}</button></div>` : ""}
+      <div class="hr"></div>
+      <div class="panel-t" style="margin-top:0">📋 宗门任务</div>
+      <div class="grid g3">
+        ${tasks.map((t, i) => {
+    const lvGate = i;
+    const ok = s.realmIdx >= lvGate;
+    return `<div class="card">
+            <div class="card-t">${t.i} ${t.n}</div>
+            <div class="card-d">贡献 +${t.gain}，声望 +${t.rep}，灵草若干。${lvGate ? `<br><span class="tiny">需 ${REALMS[Math.min(lvGate, REALMS.length - 1)].name}境</span>` : ""}</div>
+            <div class="card-a"><button class="btn sm" data-act="sectTask" data-i="${i}" ${ok ? "" : "disabled"}>领取</button></div>
+          </div>`;
+  }).join("")}
+      </div>
+    ` : `
+      <div class="card-d">你尚未拜入任何宗门。修行之路，独行亦可，结伴亦佳。</div>
+      <div class="hr"></div>
+      <div class="grid g2">
+        ${SECTS.map(x => {
+    const ok = s.realmIdx >= majorStart(x.joinAt);
+    return `<div class="card">
+            <div class="card-t">${x.icon} ${x.name}</div>
+            <div class="card-d">${x.desc}<br><span class="jade">${x.bonusTxt}</span></div>
+            <div class="card-a">
+              ${x.joinAt > 0 ? `<span class="tag ${ok ? "g" : "r"}">需 ${REALMS[x.joinAt].name}境</span>` : '<span class="tag g">无门槛</span>'}
+              <button class="btn sm pri" data-act="joinSect" data-id="${x.id}" ${ok ? "" : "disabled"}>拜入</button>
+            </div>
+          </div>`;
+  }).join("")}
+      </div>
+    `}
+  </div>`;
+}
+
+/* ---------- 道侣 ---------- */
+function viewLovers() {
+  const s = G;
+  return `
+  <div class="panel">
+    <div class="panel-t">💞 红颜知己<span class="sub">赠送礼物、共同历练可提升好感</span></div>
+    <div class="grid g2">
+      ${LOVERS.map(l => {
+    const st = s.lovers[l.id] || { fav: 0, met: false, stage: 0 };
+    const locked = s.realmIdx < majorStart(l.meet);
+    const fav = st.fav;
+    const cur = FAV_STAGE.filter(x => fav >= x.v).pop();
+    const next = FAV_STAGE.find(x => fav < x.v);
+    const isLover = fav >= 200;
+    return `<div class="card ${isLover ? "sel" : ""}">
+          <div class="card-t">${l.icon} ${locked ? "？？？" : l.name} <span class="tag ${isLover ? "p" : "y"}">${locked ? "未相遇" : favName(fav)}</span></div>
+          <div class="card-d">${locked ? `<span class="tiny">需 ${REALMS[l.meet].name}境方可相遇。</span>` : l.desc}</div>
+          ${!locked ? `
+            <div class="kv"><span class="k">好感度</span><span class="v">${fmt(fav)}${next ? ` / ${next.v}` : ""}</span></div>
+            <div class="prog-mini"><i style="width:${clamp(fav / 400, 0, 1) * 100}%"></i></div>
+            ${st.stage > 0 ? `<div class="quote tiny" style="margin-top:7px">${l.lines[Math.min(st.stage - 1, l.lines.length - 1)]}</div>` : ""}
+            <div class="card-a" style="margin-top:8px">
+              ${GIFT_ITEMS.map(g => `<button class="btn sm" data-act="gift" data-l="${l.id}" data-g="${g.id}" ${s.money >= Math.floor(g.cost * calcStats(s).shopCost) ? "" : "disabled"}>${g.icon} ${g.name}（${fmt(Math.floor(g.cost * calcStats(s).shopCost))}）</button>`).join("")}
+            </div>
+            <div class="card-a"><button class="btn sm" data-act="talk" data-l="${l.id}">💬 谈心</button></div>
+          ` : ""}
+        </div>`;
+  }).join("")}
+    </div>
+  </div>
+  <div class="panel">
+    <div class="panel-t">🎁 礼物说明</div>
+    <div class="grid g3">
+      ${GIFT_ITEMS.map(g => `<div class="card">
+        <div class="card-t">${g.icon} ${g.name}</div>
+        <div class="card-d">${g.desc}<br><span class="jade">好感 +${g.fav}</span></div>
+      </div>`).join("")}
+    </div>
+  </div>`;
+}
+
+/* ---------- 剧情 ---------- */
+function viewStory() {
+  const s = G;
+  const all = STORY;
+  return `
+  <div class="panel">
+    <div class="panel-t">📖 问道之路</div>
+    <div class="card-d">主线随境界推进自动触发。当前进度：${s.storyDone.length} / ${all.length}</div>
+    <div class="prog-mini"><i style="width:${s.storyDone.length / all.length * 100}%"></i></div>
+    ${s.storyQueue.length ? `<div class="card-a" style="margin-top:9px"><button class="btn pri" data-act="playStory">▶ 继续剧情</button></div>` : ""}
+  </div>
+  <div class="panel">
+    <div class="panel-t">📜 章节</div>
+    <div class="grid g2">
+      ${all.map(st => {
+    const done = s.storyDone.includes(st.id);
+    const isNext = !done && st.cond(s);
+    return `<div class="card ${isNext ? "sel" : ""}">
+          <div class="card-t">${done ? st.icon : "🔒"} ${st.title} ${done ? '<span class="tag g">已完成</span>' : isNext ? '<span class="tag y">可触发</span>' : ""}</div>
+          <div class="card-d">${done ? st.text[0] : isNext ? '<span class="gold">剧情已就绪，点击下方按钮展开。</span>' : '<span class="tiny">尚未满足触发条件。</span>'}</div>
+          ${done ? `<div class="card-a"><button class="btn sm" data-act="readStory" data-id="${st.id}">回顾</button></div>` : ""}
+        </div>`;
+  }).join("")}
+    </div>
+  </div>
+  ${isStageEnd(s) ? `<div class="panel">
+    <div class="panel-t">🌊 阶段结局</div>
+    <div class="card-d">依据你的道心与经历，当前倾向：<span class="gold">${endingOf(s).i} ${endingOf(s).n}</span><br><span class="tiny">${endingOf(s).d}</span></div>
+    <div class="card-a"><button class="btn sm" data-act="stageEnd">回看阶段结局</button></div>
+  </div>` : ""}`;
+}
+
+/* ---------- 成就 ---------- */
+function viewAchieve() {
+  const s = G;
+  const got = s.achievements.length;
+  return `
+  <div class="panel">
+    <div class="panel-t">🏆 成就<span class="sub">${got} / ${ACHIEVEMENTS.length}</span></div>
+    <div class="prog-mini"><i style="width:${got / ACHIEVEMENTS.length * 100}%"></i></div>
+    <div class="hr"></div>
+    <div class="grid g3">
+      ${ACHIEVEMENTS.map(a => {
+    const ok = s.achievements.includes(a.id);
+    return `<div class="card ${ok ? "sel" : ""}">
+          <div class="card-t">${ok ? a.i : "🔒"} ${ok ? a.n : "？？？"}</div>
+          <div class="card-d">${a.d}</div>
+        </div>`;
+  }).join("")}
+    </div>
+  </div>
+  <div class="panel">
+    <div class="panel-t">📊 生涯统计</div>
+    <div class="grid g2">
+      <div>
+        <div class="kv"><span class="k">累计修炼修为</span><span class="v">${fmt(s.stat.totalCultivate)}</span></div>
+        <div class="kv"><span class="k">累计获得灵石</span><span class="v gold">${fmt(s.stat.totalMoney)}</span></div>
+        <div class="kv"><span class="k">战斗胜利</span><span class="v jade">${fmt(s.stat.wins)}</span></div>
+        <div class="kv"><span class="k">战斗失败</span><span class="v blood">${fmt(s.stat.losses)}</span></div>
+      </div>
+      <div>
+        <div class="kv"><span class="k">突破成功 / 失败</span><span class="v">${s.stat.breakOk} / ${s.stat.breakFail}</span></div>
+        <div class="kv"><span class="k">炼丹成功 / 失败</span><span class="v">${s.stat.alchemyOk} / ${s.stat.alchemyFail}</span></div>
+        <div class="kv"><span class="k">经历奇遇</span><span class="v">${s.stat.events}</span></div>
+        <div class="kv"><span class="k">游戏内时长</span><span class="v">${s.time.toFixed(1)} 日（约 ${gameYears(s.time)} 年）</span></div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ---------- 坊市 ---------- */
+function viewShop() {
+  const s = G, st = calcStats(s);
+  const price = p => Math.floor(p.price * st.shopCost);
+  const stock = PILLS.filter(p => !p.noShop);
+  return `
+  <div class="panel">
+    <div class="panel-t">🏮 坊市<span class="sub">灵石：${fmt(s.money)}${st.shopCost !== 1 ? ` · 价格 ×${st.shopCost.toFixed(2)}` : ""}</span></div>
+    <div class="grid g3">
+      ${stock.map(p => `<div class="card">
+        <div class="card-t">${p.icon} ${p.name} <span class="tag ${TIER_CLS[p.tier]}">${TIER_NAME[p.tier]}</span></div>
+        <div class="card-d">${p.desc}</div>
+        <div class="card-a">
+          <span class="tag y">${fmt(price(p))} 灵石</span>
+          <button class="btn sm pri" data-act="buyPill" data-id="${p.id}" ${s.money >= price(p) ? "" : "disabled"}>购买</button>
+          <button class="btn sm" data-act="buyPill10" data-id="${p.id}" ${s.money >= price(p) * 10 ? "" : "disabled"}>×10</button>
+        </div>
+      </div>`).join("")}
+    </div>
+  </div>
+  <div class="panel">
+    <div class="panel-t">🌿 灵草与杂物</div>
+    <div class="grid g3">
+      <div class="card">
+        <div class="card-t">🌿 灵草</div>
+        <div class="card-d">炼丹的基础材料，山野间多有生长。</div>
+        <div class="card-a">
+          <span class="tag y">${fmt(Math.floor(30 * st.shopCost))} 灵石</span>
+          <button class="btn sm pri" data-act="buyHerb" ${s.money >= Math.floor(30 * st.shopCost) ? "" : "disabled"}>购买 1 株</button>
+          <button class="btn sm" data-act="buyHerb10" ${s.money >= Math.floor(30 * st.shopCost) * 10 ? "" : "disabled"}>×10</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-t">🎲 神秘商人</div>
+        <div class="card-d">花 500 灵石赌一件法宝，品阶随机。富贵险中求。</div>
+        <div class="card-a"><button class="btn sm pri" data-act="gambleEquip" ${s.money >= 500 ? "" : "disabled"}>赌一把（500）</button></div>
+      </div>
+      <div class="card">
+        <div class="card-t">🔄 变卖</div>
+        <div class="card-d">将储物袋中的法宝换取灵石。</div>
+        <div class="card-a"><button class="btn sm" data-act="tab" data-tab="bag">前往储物袋</button></div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ---------- 设置 ---------- */
+function viewSettings() {
+  const s = G;
+  const spd = getTimeMultiplier(s);
+  const end = endingOf(s);
+  const remainDays = (BASE_TOTAL_REAL_SEC / 86400);
+  return `
+  <div class="panel">
+    <div class="panel-t">⚙️ 设置</div>
+    <div class="kv"><span class="k">道号</span><span class="v"><input id="nameInput" value="${s.name}" inputmode="text" style="background:#0c0f13;border:1px solid #3a4658;color:#d6d0c4;padding:6px 8px;border-radius:3px;width:130px;font-family:inherit;font-size:16px"></span></div>
+    <div class="kv"><span class="k">音效</span><span class="v"><button class="btn sm" data-act="toggleSfx">${s.settings.sfx ? "🔊 开" : "🔇 关"}</button></span></div>
+    <div class="kv"><span class="k">暂停</span><span class="v"><button class="btn sm ${s.paused ? "pri" : ""}" data-act="togglePause">${s.paused ? "⏸ 已暂停" : "▶ 运行中"}</button></span></div>
+    <div class="kv"><span class="k">日历</span><span class="v">1 游戏日 = ${REAL_SEC_PER_GAME_DAY / 60} 现实分钟 · ${GAME_DAYS_PER_YEAR} 日/年</span></div>
+    <div class="hr"></div>
+    <div class="card-d tiny">
+      基础培养目标：约 ${remainDays} 个现实日（凡人 → 化神圆满）。<br>
+      暂停时修炼、任务与日历均停止；现实日重置（丹药次数）仍按系统日期判定。
+    </div>
+  </div>
+  <div class="panel">
+    <div class="panel-t">🧪 开发加速档<span class="sub">仅原型测试</span></div>
+    <div class="kv"><span class="k">当前倍率</span><span class="v gold">×${spd}</span></div>
+    <div class="card-d tiny">
+      开发档会【同时】加速游戏日历与修炼进度，不会改变现实日丹药次数的重置规则。<br>
+      正式玩法不显示这些档位。
+    </div>
+    <div class="btn-row" style="margin-top:9px">
+      ${DEV_TIME_MULTIPLIERS.map(x => `<button class="btn sm ${spd === x ? "pri" : ""}" data-act="setSpeed" data-v="${x}">×${x}</button>`).join("")}
+    </div>
+    <div class="tiny" style="margin-top:6px">理论通关耗时：${DEV_TIME_MULTIPLIERS.map(x => `×${x} → ${hhmmss(BASE_TOTAL_REAL_SEC / x)}`).join("　")}</div>
+  </div>
+  <div class="panel">
+    <div class="panel-t">💾 存档</div>
+    <div class="card-d">游戏每 5 秒自动存档。关闭网页后，离线期间（100% 效率，封顶 24 小时）仍在修行。</div>
+    <div class="btn-row" style="margin-top:9px">
+      <button class="btn" data-act="save">💾 立即存档</button>
+      <button class="btn" data-act="export">📤 导出存档</button>
+      <button class="btn" data-act="import">📥 导入存档</button>
+      <button class="btn danger" data-act="reset">🗑️ 重开人生</button>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="panel-t">🧪 内测调试（GM）</div>
+    <div class="card-d tiny">以下功能仅用于内测体验，正式版将移除。</div>
+    <div class="btn-row" style="margin-top:9px">
+      <button class="btn sm" data-act="gm" data-k="money">+100万灵石</button>
+      <button class="btn sm" data-act="gm" data-k="herbs">+1000灵草</button>
+      <button class="btn sm" data-act="gm" data-k="xiuwei">+100倍修为</button>
+      <button class="btn sm" data-act="gm" data-k="realmUp">境界 +1</button>
+      <button class="btn sm" data-act="gm" data-k="realmMax">直达化神圆满</button>
+      <button class="btn sm" data-act="gm" data-k="heal">回满气血</button>
+      <button class="btn sm" data-act="gm" data-k="daoUp">道心 +10</button>
+      <button class="btn sm" data-act="gm" data-k="daoDown">道心 -10</button>
+      <button class="btn sm" data-act="gm" data-k="luck">气运 +20</button>
+      <button class="btn sm" data-act="gm" data-k="rep">声望 +100</button>
+      <button class="btn sm" data-act="gm" data-k="allArts">习得全部功法</button>
+      <button class="btn sm" data-act="gm" data-k="pet">获得螭龙</button>
+      <button class="btn sm" data-act="gm" data-k="token">集齐飞升之物</button>
+      <button class="btn sm" data-act="gm" data-k="ascendNow">直达阶段终点</button>
+      <button class="btn sm" data-act="gm" data-k="storyAll">解锁全部剧情</button>
+      <button class="btn sm" data-act="gm" data-k="lover">好感拉满</button>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="panel-t">📖 关于</div>
+    <div class="card-d">
+      《问道 · 修仙纪》v0.1 内测版<br>
+      一个关于「往上走」的故事。你从青石镇出发，走过九境，渡过天劫，飞升仙界，最后发现——天上，早就不是净土了。<br><br>
+      <span class="tiny">当前结局倾向：${end.i} ${end.n} —— ${end.d}</span>
+    </div>
+  </div>`;
+}
+/* ============================================================
+   七、弹窗
+   ============================================================ */
+let modalBtns = [];
+function showModal(title, body, btns) {
+  modalBtns = btns || [];
+  $("#modal-layer").innerHTML = `
+    <div class="modal">
+      <div class="modal-h">${title}</div>
+      <div class="modal-b">${body}</div>
+      <div class="modal-f">${modalBtns.map((b, i) => `<button class="btn ${b.pri ? "pri" : ""}" data-mb="${i}">${b.t}</button>`).join("")}</div>
+    </div>`;
+  $("#modal-layer").classList.add("on");
+}
+function closeModal() { $("#modal-layer").classList.remove("on"); $("#modal-layer").innerHTML = ""; modalBtns = []; }
+$("#modal-layer").addEventListener("click", e => {
+  if (e.target.id === "modal-layer") { closeModal(); return; }
+  const b = e.target.closest("[data-mb]");
+  if (b) { const f = modalBtns[+b.dataset.mb]; if (f && f.fn) f.fn(); }
+});
+/* 阶段结局面板（可重复查看） */
+function openStageEndModal() {
+  const s = G;
+  s.stageEndShown = false;      /* 允许重看 */
+  showStageEnd(s);
+}
+/* ============================================================
+   八、交互
+   ============================================================ */
+document.addEventListener("click", e => {
+  const tab = e.target.closest("[data-tab]");
+  if (tab) { G.tab = tab.dataset.tab; sfx("click"); render(); return; }
+  const el = e.target.closest("[data-act]");
+  if (!el) return;
+  const act = el.dataset.act, s = G;
+  sfx("click");
+  switch (act) {
+    case "tab": G.tab = el.dataset.tab; break;
+    case "break": tryBreak(s, false); return;
+    case "setPill": s.pendingPill = el.dataset.id || null; break;
+    case "ascendModal": case "stageEnd": openStageEndModal(); return;
+    case "setZone": {
+      const z = ZONES.find(x => x.id === el.dataset.id);
+      if (s.realmIdx < majorStart(z.req)) { toast("境界不足，此地凶险。", "r"); return; }
+      s.zone = z.id; s.zoneProgress = 0; break;
+    }
+    case "adventure": doAdventure(s, el.dataset.mode); return;
+    case "toggleAuto": {
+      s.auto.on = !s.auto.on;
+      if (s.auto.on) { s.autoAdventure = false; toast("▶️ 全自动历练已开启", "g"); }
+      else { toast("⏹ 已停止自动历练", ""); }
+      break;
+    }
+    case "autoSpeed": s.auto.speed = +el.dataset.v; toast(`战斗节奏：×${s.auto.speed}`, ""); break;
+    case "autoCfg": {
+      const k = el.dataset.k;
+      s.auto[k] = !s.auto[k];
+      const NAMES = { boss: "自动挑战首领", pill: "自动服丹", equip: "自动换装", sell: "自动变卖", autoZone: "自动前往最佳区域" };
+      toast(`${NAMES[k] || k}：${s.auto[k] ? "开" : "关"}`, "");
+      break;
+    }
+    case "cycleFlee": {
+      /* 关闭 → 15% → 30% → 关闭 循环 */
+      const seq = [0, 0.15, 0.30];
+      const i = seq.indexOf(s.auto.fleeHp);
+      s.auto.fleeHp = seq[(i + 1) % seq.length];
+      toast(`自动遁走：${s.auto.fleeHp > 0 ? "气血 " + (s.auto.fleeHp * 100) + "% 以下" : "关闭"}`, "");
+      break;
+    }
+    case "toggleAutoAdv": s.autoAdventure = !s.autoAdventure; toast(s.autoAdventure ? "自动历练：已开启" : "自动历练：已关闭"); break;
+    case "event": {
+      if (s.money < 10) { toast("灵石不足。", "r"); return; }
+      s.money -= 10;
+      openEventModal(s, rollEvent(s)); return;
+    }
+    case "battleRound": battleRound(s); break;
+    case "flee": {
+      if (s.battle) { addBattleLog(s, "🏃 你遁走了。", "dim"); s.battle.over = true; s.battle = null; toast("你遁走了。", ""); }
+      break;
+    }
+    case "battlePill": {
+      const p = PILLS.find(x => x.id === el.dataset.id);
+      if (!p || !p.battle) return;
+      if (!usePill(s, p.id, 1)) { toast("丹药不足。", "r"); return; }
+      const st = calcStats(s);
+      if (p.battle === "heal") { const h = Math.floor(st.hpMax * p.val); s.hp = Math.min(st.hpMax, s.hp + h); addBattleLog(s, `🔵 你服下回气丹，回复 ${fmt(h)} 气血。`, "sys"); }
+      break;
+    }
+    case "equip": equipItem(s, el.dataset.uid); break;
+    case "unequip": unequip(s, el.dataset.slot); break;
+    case "sell": {
+      const i = s.bag.findIndex(x => x.uid === el.dataset.uid);
+      if (i >= 0) { const it = s.bag.splice(i, 1)[0]; s.money += it.price; s.stat.totalMoney += it.price; toast(`卖出 ${it.qname}，得 ${fmt(it.price)} 灵石。`, "y"); sfx("coin"); }
+      break;
+    }
+    case "autoEquip": {
+      let n = 0;
+      SLOTS.forEach(sl => {
+        let best = s.equip[sl.id], bi = -1;
+        s.bag.forEach((it, i) => {
+          if (it.slot !== sl.id) return;
+          if (equipScore(it) > equipScore(best)) { best = it; bi = i; }
+        });
+        if (bi >= 0) { const it = s.bag.splice(bi, 1)[0]; if (s.equip[sl.id]) s.bag.push(s.equip[sl.id]); s.equip[sl.id] = it; n++; }
+      });
+      toast(n ? `已更换 ${n} 件装备。` : "没有更好的装备了。", n ? "g" : "");
+      break;
+    }
+    case "sellJunk": {
+      const keep = [], sold = [];
+      s.bag.forEach(it => (it.tier >= 3 ? keep : sold).push(it));
+      const money = sold.reduce((a, b) => a + b.price, 0);
+      s.bag = keep; s.money += money; s.stat.totalMoney += money;
+      toast(`卖出 ${sold.length} 件法宝，得 ${fmt(money)} 灵石。`, "y");
+      if (sold.length) sfx("coin");
+      break;
+    }
+    case "usePill": {
+      const p = PILLS.find(x => x.id === el.dataset.id);
+      if (!p || !usePill(s, p.id, 1)) { toast("丹药不足。", "r"); return; }
+      if (p.buff) { s.buffs.push({ k: "rate", v: p.buff.rate, left: p.buff.dur }); toast(`服下 ${p.name}，修炼速度提升。`, "g"); }
+      if (p.perm) {
+        const cap = p.perm.cap || 99;
+        if (p.perm.hp) s.perm.hp = Math.min(cap, s.perm.hp + p.perm.hp);
+        if (p.perm.rate) s.perm.rate = Math.min(cap, s.perm.rate + p.perm.rate);
+        toast(`服下 ${p.name}，根基更为稳固。`, "g");
+      }
+      break;
+    }
+    case "learnArt": {
+      const a = ARTS.find(x => x.id === el.dataset.id);
+      if (!a) return;
+      if (s.arts.includes(a.id)) { toast("已习此功法。", "r"); return; }   /* 不重复修习、不重置进度 */
+      if (s.realmIdx < majorStart(a.revealAt)) { toast(`${REALMS[a.revealAt].name}境方可显形。`, "r"); return; }
+      /* 渠道门控：宗门功法需本门（以 SECTS.art 反查，避免 a.sect 字段缺失误封）；坊市功法需灵石足 */
+      if (a.channel === "sect") {
+        const owner = SECTS.find(x => x.art === a.id);
+        if (owner && s.sect !== owner.id) { toast("非本门弟子，无法修习。", "r"); return; }
+      }
+      if (a.cost) {
+        if (a.cost.spirit != null && s.money < a.cost.spirit) { toast("灵石不足。", "r"); return; }
+        if (a.cost.contrib != null && s.contrib < a.cost.contrib) { toast("宗门贡献不足。", "r"); return; }
+      }
+      /* 其余渠道（encounter/event/alchemy/cave/boss/explore/lover/pet/achieve）多数为对应系统自动授予；
+         若玩家在 UI 手动点击，则按前置条件即时授予一次，避免“看得见学不了”的死锁。 */
+      if (a.channel !== "shop" && a.channel !== "sect") {
+        const ct = artCondTag(a, s);
+        if (!ct.ok) { toast("此功法需达成前置方可获取：" + ct.txt + "。", "r"); return; }
+        grantArt(s, a.id); sfx("levelup"); break;
+      }
+      if (a.cost && a.cost.spirit != null) s.money -= a.cost.spirit;
+      if (a.cost && a.cost.contrib != null) s.contrib -= a.cost.contrib;
+      grantArt(s, a.id);
+      break;
+    }
+    case "alchemy": {
+      const r = RECIPES.find(x => x.out === el.dataset.id);
+      if (!r) return;
+      const p = PILLS.find(x => x.id === r.out);
+      if (s.realmIdx < majorStart(r.req)) { toast("境界不足，火候难控。", "r"); return; }
+      if (s.herbs < r.herbs || s.money < r.money) { toast("材料不足。", "r"); return; }
+      s.herbs -= r.herbs; s.money -= r.money;
+      const st = calcStats(s);
+      const rate = clamp(r.diff + st.alchemy, 0.05, 0.99);
+      if (Math.random() < rate) {
+        addPill(s, r.out, 1); s.stat.alchemyOk++;
+        addLog(s, `炼成 ${p.name} ×1。`, "g"); toast(`炼成 ${p.icon} ${p.name}！`, "g"); sfx("levelup");
+        checkArtGrants(s);   /* 累计炼丹成功 50 次→地火功 */
+      } else {
+        s.stat.alchemyFail++;
+        const back = Math.floor(r.herbs * 0.4); s.herbs += back;
+        addLog(s, `炼制 ${p.name} 失败，炸炉了。`, "r"); toast("炸炉了……", "r"); sfx("fail");
+      }
+      break;
+    }
+    case "upCave": {
+      const f = CAVE_FAC.find(x => x.id === el.dataset.id);
+      const lv = s.cave[f.id], cost = f.cost(lv);
+      if (s.money < cost) { toast("灵石不足。", "r"); return; }
+      s.money -= cost; s.cave[f.id]++;
+      addLog(s, `${f.n} 升级至 Lv.${s.cave[f.id]}。`, "g");
+      toast(`${f.n} Lv.${s.cave[f.id]}`, "g"); sfx("levelup");
+      checkArtGrants(s);   /* 聚灵阵 Lv5→五禽戏 / 丹房 Lv20→大衍神术 */
+      break;
+    }
+    case "buyPet": {
+      const p = PETS.find(x => x.id === el.dataset.id);
+      if (s.money < p.cost) { toast("灵石不足。", "r"); return; }
+      s.money -= p.cost; s.pet = p.id; s.petLv = 1;
+      addLog(s, `与 ${p.name} 结下契约。`, "g");
+      toast(`${p.icon} ${p.name} 与你结契！`, "g"); sfx("levelup");
+      checkArtGrants(s);   /* 结契螭龙→星辰诀 */
+      break;
+    }
+    case "upPet": {
+      const p = PETS.find(x => x.id === s.pet);
+      const cost = Math.floor(p.cost * 0.3 * Math.pow(1.45, s.petLv));
+      if (s.money < cost) { toast("灵石不足。", "r"); return; }
+      s.money -= cost; s.petLv++;
+      toast(`${p.name} 升至 Lv.${s.petLv}`, "g"); sfx("levelup");
+      break;
+    }
+    case "joinSect": {
+      const x = SECTS.find(z => z.id === el.dataset.id);
+      if (s.realmIdx < majorStart(x.joinAt)) { toast("境界不足。", "r"); return; }
+      applySect(s, x.id);
+      addLog(s, `你拜入了 ${x.name}。`, "g");
+      toast(`拜入 ${x.icon} ${x.name}！`, "g"); sfx("levelup");
+      break;
+    }
+    case "promote": {
+      const next = SECT_CONTRIB[s.sectRank + 1];
+      if (s.contrib < next) { toast("贡献不足。", "r"); return; }
+      s.contrib -= next; s.sectRank++;
+      addLog(s, `晋升为 ${SECT_RANKS[s.sectRank]}。`, "g");
+      toast(`晋升 ${SECT_RANKS[s.sectRank]}！`, "g"); sfx("levelup");
+      break;
+    }
+    case "sectTask": {
+      const i = +el.dataset.i;
+      const tasks = [8, 15, 30, 60, 120];
+      const reps = [1, 2, 4, 6, 10];
+      s.contrib += tasks[i]; s.reputation += reps[i];
+      s.herbs += ri(0, 2 + i);
+      const m = Math.floor(50 * Math.pow(1.8, i) * (1 + calcStats(s).money));
+      s.money += m; s.stat.totalMoney += m;
+      addLog(s, `完成宗门任务，贡献 +${tasks[i]}，灵石 +${fmt(m)}。`, "g");
+      toast(`任务完成：贡献 +${tasks[i]}`, "g");
+      break;
+    }
+    case "gift": {
+      const l = LOVERS.find(x => x.id === el.dataset.l);
+      const g = GIFT_ITEMS.find(x => x.id === el.dataset.g);
+      const cost = Math.floor(g.cost * calcStats(s).shopCost);
+      if (s.money < cost) { toast("灵石不足。", "r"); return; }
+      s.money -= cost;
+      if (!s.lovers[l.id]) s.lovers[l.id] = { fav: 0, met: true, stage: 0, given: [] };
+      s.lovers[l.id].fav += g.fav;
+      const lv = s.lovers[l.id];
+      const newStage = FAV_STAGE.filter(x => lv.fav >= x.v).length - 1;
+      if (newStage > lv.stage) { lv.stage = newStage; addLog(s, `你与 ${l.name} 的关系进展为「${FAV_STAGE[newStage].n}」。`, "g"); toast(`与 ${l.name}：${FAV_STAGE[newStage].n}`, "p"); sfx("levelup"); }
+      else toast(`赠予 ${g.name}，${l.name} 好感 +${g.fav}。`, "p");
+      /* 道侣私赠：随好感里程碑（倾心100/道侣200/生死相随400）赠出珍藏功法/丹药/灵宠。
+         礼物 id 跨 ART/PILL/PET 三类，需分别处理；已赠出者记入 given 避免重复叠加。 */
+      const th = [100, 200, 400];
+      (l.gifts || []).forEach((id, i) => {
+        if (lv.fav < (th[i] || 9999)) return;
+        if (lv.given.includes(id)) return;
+        lv.given.push(id);
+        if (ARTS.some(a => a.id === id)) { grantArt(s, id); }
+        else if (PILLS.some(p => p.id === id)) { const p = PILLS.find(x => x.id === id); addPill(s, id, 1); addLog(s, `${l.name} 赠你 ${p.name} ×1。`, "g"); toast(`${l.name} 赠你 ${p.name}！`, "g"); }
+        else if (PETS.some(p => p.id === id)) { const p = PETS.find(x => x.id === id); s.pet = id; s.petLv = 1; addLog(s, `${l.name} 赠你灵宠「${p.name}」。`, "g"); toast(`结契 ${p.icon} ${p.name}！`, "g"); }
+      });
+      checkArtGrants(s);   /* 好感≥100 即满足清心咒前置 */
+      break;
+    }
+    case "talk": {
+      const l = LOVERS.find(x => x.id === el.dataset.l);
+      if (!s.lovers[l.id]) s.lovers[l.id] = { fav: 0, met: true, stage: 0 };
+      const lv = s.lovers[l.id];
+      if (lv.fav < 5) { toast(`${l.name} 只是淡淡看了你一眼。`, ""); break; }
+      lv.fav += 2;
+      const line = l.lines[clamp(Math.floor(lv.fav / 60), 0, l.lines.length - 1)];
+      addLog(s, `${l.name}：${line}`, "p");
+      toast(line.slice(0, 42), "p");
+      break;
+    }
+    case "playStory": {
+      const id = s.storyQueue[0];
+      const st = STORY.find(x => x.id === id);
+      if (st) showStoryModal(s, st);
+      return;
+    }
+    case "readStory": {
+      const st = STORY.find(x => x.id === el.dataset.id);
+      if (st) showStoryModal(s, st);
+      return;
+    }
+    case "buyPill": case "buyPill10": {
+      const p = PILLS.find(x => x.id === el.dataset.id);
+      const n = act === "buyPill10" ? 10 : 1;
+      const cost = Math.floor(p.price * calcStats(s).shopCost) * n;
+      if (s.money < cost) { toast("灵石不足。", "r"); return; }
+      s.money -= cost; addPill(s, p.id, n);
+      toast(`购入 ${p.name} ×${n}`, "y"); sfx("coin");
+      break;
+    }
+    case "buyHerb": case "buyHerb10": {
+      const n = act === "buyHerb10" ? 10 : 1;
+      const cost = Math.floor(30 * calcStats(s).shopCost) * n;
+      if (s.money < cost) { toast("灵石不足。", "r"); return; }
+      s.money -= cost; s.herbs += n;
+      toast(`购入灵草 ×${n}`, "y"); sfx("coin");
+      break;
+    }
+    case "gambleEquip": {
+      if (s.money < 500) { toast("灵石不足。", "r"); return; }
+      s.money -= 500;
+      const it = genEquip(ri(2, 5), s.realmIdx);
+      addBag(s, it);
+      addLog(s, `神秘商人给了你一件 <span class="q${it.tier}">${it.qname}</span>。`, "g");
+      toast(`得到 ${it.qname}！`, "g"); sfx("coin");
+      break;
+    }
+    case "toggleSfx": s.settings.sfx = !s.settings.sfx; break;
+    case "setSpeed": {
+      s.speed = +el.dataset.v;
+      toast(`开发加速档 ×${s.speed}（同时作用于日历与修炼）`, "");
+      break;
+    }
+    case "togglePause": {
+      s.paused = !s.paused;
+      toast(s.paused ? "⏸ 已暂停（修炼/任务/日历均停止）" : "▶ 继续", "");
+      break;
+    }
+    case "save": save(); toast("已存档。", "g"); return;
+    case "export": {
+      const data = btoa(unescape(encodeURIComponent(JSON.stringify(s))));
+      showModal("📤 导出存档", `<p>复制以下文本妥善保存：</p><textarea readonly style="width:100%;height:130px;background:#0c0f13;border:1px solid #3a4658;color:#d6d0c4;font-size:11px;padding:8px;border-radius:3px">${data}</textarea>`, [{ t: "关闭", fn: closeModal }]);
+      return;
+    }
+    case "import": {
+      showModal("📥 导入存档", `<p>粘贴存档文本：</p><textarea id="importArea" style="width:100%;height:130px;background:#0c0f13;border:1px solid #3a4658;color:#d6d0c4;font-size:11px;padding:8px;border-radius:3px"></textarea>`,
+        [{ t: "导入", pri: true, fn: () => { try { const t = $("#importArea").value.trim(); const d = JSON.parse(decodeURIComponent(escape(atob(t)))); localStorage.setItem(SAVE_KEY, JSON.stringify(d)); location.reload(); } catch (e) { toast("存档格式错误。", "r"); } } }, { t: "取消", fn: closeModal }]);
+      return;
+    }
+    case "newGame": {
+      showModal("🔄 新游戏", `<p>将<b>删除当前存档</b>并开创新一世（随机灵根、无出身、无送功法）。<br>旧存档无法恢复，确定继续吗？</p>`, [
+        { t: "删除并开新档", pri: true, fn: () => { localStorage.removeItem(SAVE_KEY); G = null; location.reload(); } },
+        { t: "取消", fn: closeModal }
+      ]);
+      return;
+    }
+    case "reset": {
+      showModal("🗑️ 重开人生", `<p>确定要抹去这一世的修行吗？此操作不可撤销。</p>`, [
+        { t: "确定重开", pri: true, fn: () => { localStorage.removeItem(SAVE_KEY); G = null; location.reload(); } },
+        { t: "算了", fn: closeModal }
+      ]);
+      return;
+    }
+    case "gm": {
+      const k = el.dataset.k;
+      if (k === "money") { s.money += 1e6; s.stat.totalMoney += 1e6; }
+      else if (k === "herbs") s.herbs += 1000;
+      else if (k === "xiuwei") s.xiuwei += needXiuwei(s.realmIdx) * 100;
+      else if (k === "realmUp") s.realmIdx = Math.min(MAX_INDEX, s.realmIdx + 1);
+      else if (k === "realmMax") s.realmIdx = majorEnd(STAGE_END_MAJOR);
+      else if (k === "heal") { const st = calcStats(s); s.hp = st.hpMax; s.mp = st.mpMax; }
+      else if (k === "daoUp") s.daoXin = clamp(s.daoXin + 10, 0, 100);
+      else if (k === "daoDown") s.daoXin = clamp(s.daoXin - 10, 0, 100);
+      else if (k === "luck") s.luck += 20;
+      else if (k === "rep") s.reputation += 100;
+      else if (k === "allArts") ARTS.forEach(a => { if (!s.arts.includes(a.id)) s.arts.push(a.id); });
+      else if (k === "pet") { s.pet = "long"; s.petLv = 10; }
+      else if (k === "token") { s.storyDone = STORY.map(x => x.id); }
+      else if (k === "ascendNow") { s.daoXin = Math.max(60, s.daoXin); s.realmIdx = majorEnd(STAGE_END_MAJOR); showStageEnd(s); return; }
+      else if (k === "storyAll") s.storyDone = STORY.map(x => x.id);
+      else if (k === "lover") LOVERS.forEach(l => { s.lovers[l.id] = { fav: 400, met: true, stage: 5 }; });
+      const st = calcStats(s); s.hp = Math.min(s.hp, st.hpMax);
+      toast("GM：" + k, "p");
+      checkAchievements(s);
+      break;
+    }
+  }
+  save(); render();
+});
+/* 输入框事件 */
+document.addEventListener("input", e => {
+  if (e.target.id === "nameInput") { G.name = e.target.value.slice(0, 12) || "无名"; renderTop(); }
+});
+/* ============================================================
+   九、游戏循环
+   ------------------------------------------------------------
+   统一时间推进入口 advanceGameTime()。
+   修炼、日历、战斗、杂役任务全部在这里按同一倍率推进，
+   避免各处分别累计时间造成重复结算。
+   ============================================================ */
+/* 推进一帧。realElapsedSec = 真实经过秒数（未乘倍率） */
+function advanceGameTime(s, realElapsedSec) {
+  if (!s || s.paused) return;                      /* 暂停时全部停止 */
+  const mul = getTimeMultiplier(s);
+  const effSec = getOnlineEffectiveSec(realElapsedSec, mul); /* 有效秒数：日历与进度共用（在线不封顶） */
+  const gameDays = getGameDaysElapsed(effSec);
+
+  if (!s.battle) {
+    /* 无战斗：正常修炼（cultivateTick 内部会推进日历与 buff） */
+    cultivateTick(s, realElapsedSec, mul);
+  } else {
+    /* 战斗中：修为不增长，但日历照常推进（共用同一倍率） */
+    s.time += gameDays;
+    s.buffs = s.buffs.filter(b => { b.left -= effSec; return b.left > 0; });
+  }
+  /* 全自动历练（含战斗推进、自动服药、自动疗伤、自动整理）
+     战斗节奏用有效秒数，使其与时间倍率一致 */
+  autoBattleTick(s, effSec);
+  /* 杂役任务计时（真实耗时型任务，按有效秒数推进） */
+  choreTick(s, effSec);
+  sanitize(s);
+}
+
+/* ---------- 杂役任务计时（预留：宗门杂役线实现后填充） ----------
+   真实耗时型任务按「有效秒数」推进，与修炼共用同一时间倍率。 */
+function choreTick(s, effSec) {
+  if (!s.sectChore) return;
+  const c = s.sectChore;
+  if (!c.id) return;
+  c.endsAt = (c.endsAt || 0) - effSec;
+  if (c.endsAt > 0) return;
+  /* 完成一次 */
+  const def = (typeof SECT_CHORES !== "undefined") && SECT_CHORES.find(x => x.id === c.id);
+  if (!def) { s.sectChore = null; return; }
+  applyChoreReward(s, def);
+  c.completed = (c.completed || 0) + 1;
+  s.sectChoreCount = s.sectChoreCount || {};
+  s.sectChoreCount[c.id] = (s.sectChoreCount[c.id] || 0) + 1;
+  if (c.loop) c.endsAt += def.secs; else s.sectChore = null;
+}
+function applyChoreReward(s, def) {
+  const r = def.reward || {};
+  if (r.contrib) s.contrib += r.contrib;
+  if (r.money) { s.money += r.money; s.stat.totalMoney += r.money; }
+  if (r.herbs) s.herbs += r.herbs;
+  if (r.xiuwei) s.xiuwei += needXiuwei(s.realmIdx) * r.xiuwei;
+  if (def.flavor && def.flavor.length) addLog(s, pick(def.flavor), "");
+}
+
+let lastFrame = Date.now(), saveAcc = 0;
+function loop() {
+  const now = Date.now();
+  const dt = Math.min((now - lastFrame) / 1000, 60);
+  lastFrame = now;
+  if (G) {
+    advanceGameTime(G, dt);
+    /* 随机事件（历练进度，自动模式下也照常弹出，让玩家有得选） */
+    if (!G.battle && G.zoneProgress > 0 && G.zoneProgress % 10 === 0 && G._lastEventProg !== G.zoneProgress) {
+      G._lastEventProg = G.zoneProgress;
+      openEventModal(G, rollEvent(G));
+    }
+    checkStory(G);
+    /* 手动模式下的战斗推进（自动模式已在 autoBattleTick 内处理） */
+    if (G.battle && !G.battle.over && !G.auto.on) {
+      G.battle.cd += dt * getTimeMultiplier(G);
+      if (G.battle.cd >= 0.9) { G.battle.cd = 0; battleRound(G); }
+    }
+    if (G.storyQueue.length && !$("#modal-layer").classList.contains("on")) {
+      const st = STORY.find(x => x.id === G.storyQueue[0]);
+      if (st) showStoryModal(G, st);
+    }
+    /* 抵达阶段终点时提示（离线突破也可能触发） */
+    if (isStageEnd(G) && !G.stageEndShown && !$("#modal-layer").classList.contains("on")) {
+      showStageEnd(G);
+    }
+    saveAcc += dt;
+    if (saveAcc > 5) { saveAcc = 0; save(); }
+    /* 战斗中每帧刷新；自动模式也每帧刷新以呈现实时战况 */
+    if (G.battle) render();
+    else {
+      G._uiAcc = (G._uiAcc || 0) + dt;
+      if (G._uiAcc > 0.25) { G._uiAcc = 0; renderLight(); }
+    }
+  }
+  requestAnimationFrame(loop);
+}
+/* ============================================================
+   十、启动
+   ============================================================ */
+function startNewGame() {
+  /* 取消开局选身世：新档不再有出身加成，随机测定灵根后直接开修 */
+  const tot = ROOT_RAND.reduce((a, x) => a + x.w, 0);
+  let r = Math.random() * tot, rootId = "wu";
+  for (const x of ROOT_RAND) { r -= x.w; if (r <= 0) { rootId = x.id; break; } }
+  const root = ROOTS.find(x => x.id === rootId);
+  G = newState();          /* origin 为 null，无出身加成、无开局送功法 */
+  G.root = rootId;
+  const st = calcStats(G); G.hp = st.hpMax; G.mp = st.mpMax;
+  G.tab = "cultivate";
+  addLog(G, `你自青石镇出发，灵根为「${root.name}」。`, "g");
+  checkStory(G);
+  save(); render();
+}
+function boot() {
+  const loaded = load();
+  if (loaded) {
+    G = loaded;
+    G.tab = G.tab || "cultivate";
+    /* 离线结算 */
+    const off = offlineSettle(G);
+    if (off) {
+      addLog(G, `闭关 ${hhmmss(off.elapsed)}，修为 +${fmt(off.gain)}${off.breaks ? `，突破 ${off.breaks} 次` : ""}。`, "g");
+      setTimeout(() => {
+        const f = off.fight || { battles: 0, wins: 0, money: 0, items: 0 };
+        showModal("🌙 闭关归来", `
+          <p>你离开的这段时间，天地灵气未曾停歇。</p>
+          <div class="hr"></div>
+          <div class="kv"><span class="k">闭关时长</span><span class="v">${hhmmss(off.elapsed)}${off.elapsed > 24 * 3600 ? "（按 24 小时计）" : ""}</span></div>
+          <div class="kv"><span class="k">获得修为</span><span class="v gold">+${fmt(off.gain)}</span></div>
+          <div class="kv"><span class="k">自动突破</span><span class="v jade">${off.breaks} 次</span></div>
+          ${f.battles ? `
+          <div class="hr"></div>
+          <div class="kv"><span class="k">自动历练场次</span><span class="v">${fmt(f.battles)} 场（胜 ${fmt(f.wins)}）</span></div>
+          <div class="kv"><span class="k">历练所得灵石</span><span class="v gold">+${fmt(f.money)}</span></div>
+          <div class="kv"><span class="k">自动变卖法宝</span><span class="v">${fmt(f.items)} 件</span></div>` : ""}
+          <div class="hr"></div>
+          <div class="kv"><span class="k">当前境界</span><span class="v">${realmInfo(off.after).name}</span></div>
+        `, [{ t: "继续修行", pri: true, fn: closeModal }]);
+      }, 300);
+    }
+    render();
+  } else {
+    startNewGame();
+  }
+  requestAnimationFrame(loop);
+  window.addEventListener("beforeunload", save);
+  document.addEventListener("visibilitychange", () => { if (document.hidden) save(); });
+  setInterval(() => { if (G && !G.battle) { } }, 1000);
+}
+boot();
+</script>
+</body>
+</html>

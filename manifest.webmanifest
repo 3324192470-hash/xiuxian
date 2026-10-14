@@ -1,0 +1,32 @@
+{
+  "name": "问道 · 修仙纪",
+  "short_name": "问道修仙",
+  "description": "一个纯前端、单文件、可离线、手机可玩的放置修仙文字游戏。",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0c0f13",
+  "theme_color": "#0c0f13",
+  "lang": "zh-CN",
+  "icons": [
+    {
+      "src": "assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
