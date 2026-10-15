@@ -16,6 +16,15 @@
   --blood:#c05a5a; --purple:#9b7fd4; --azure:#6aa8d9;
   --txt:#d6d0c4; --txt2:#9aa3b0; --txt3:#6b7482;
   --ok:#6ec8a4; --warn:#d9a35a; --bad:#c05a5a;
+  /* 2D 美术素材（AI 生成，风格统一：深墨蓝底 + 金线）
+     已按实际显示尺寸压缩为 WebP，体积从 21.5MB 降到 0.6MB */
+  --art-bg: url("assets/bg-ambient.webp");
+  --art-hero: url("assets/bg-hero.webp");
+  --art-panel: url("assets/panel-tex.webp");
+  --art-cloud: url("assets/cloud-band.webp");
+  --art-corner: url("assets/corner.webp");
+  /* 角色 / 灵宠 / 地图立绘 */
+  --art-player: url("assets/player-cultivator.webp");
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;-webkit-text-size-adjust:100%;text-size-adjust:100%}
@@ -36,6 +45,102 @@ body::before{
   background-image:radial-gradient(rgba(255,255,255,.022) 1px,transparent 1px);
   background-size:3px 3px;
 }
+
+/* ============ 2D 美术层（整体 UI 美术风重做） ============ */
+/* 全屏氛围背景：水墨仙山 + 明月，固定铺底，其上再叠深色保证文字可读 */
+body{
+  background:
+    var(--art-bg) center top / cover no-repeat fixed,
+    radial-gradient(1200px 600px at 50% -10%, #1a2330 0%, transparent 60%),
+    radial-gradient(800px 500px at 90% 110%, #1a2620 0%, transparent 55%),
+    linear-gradient(180deg,#0b0e12,#0c0f13);
+}
+/* 顶部与底部各加一层暗化蒙版，确保标题屏/底部标签文字清晰 */
+body::after{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    linear-gradient(180deg, rgba(8,10,14,.72) 0%, rgba(8,10,14,.30) 22%, rgba(8,10,14,.30) 72%, rgba(8,10,14,.82) 100%);
+}
+/* 顶栏：在其上叠一层水墨氛围图，文字加描边更易读 */
+#topbar{
+  position:relative;
+}
+#topbar::before{
+  content:"";position:absolute;inset:0;pointer-events:none;border-radius:0 0 6px 6px;
+  background:var(--art-hero) center top / cover no-repeat;
+  opacity:.16;mix-blend-mode:screen;
+}
+#topbar .tb-name{text-shadow:0 1px 3px #000,0 0 18px rgba(217,185,106,.45)}
+#topbar .tb-org,#topbar .tb-time,#topbar .tb-attr{text-shadow:0 1px 2px #000}
+/* 面板：暗墨纸纹理 + 金线云纹标题 */
+.panel{
+  background:
+    var(--art-panel) center / cover no-repeat,
+    linear-gradient(180deg,rgba(31,38,49,.86),rgba(24,29,37,.90));
+  background-blend-mode:overlay;
+  border:1px solid var(--line);
+  box-shadow:0 2px 14px rgba(0,0,0,.45), inset 0 0 0 1px rgba(217,185,106,.05);
+}
+.panel-t{
+  border-bottom:1px solid var(--line);
+  text-shadow:0 1px 2px #000;
+  position:relative;
+}
+.panel-t::after{
+  content:"";display:block;height:6px;margin-top:7px;border-radius:2px;
+  background:var(--art-cloud) center / 240px 6px no-repeat;
+  opacity:.55;mix-blend-mode:screen;
+}
+/* 卡片：角饰 + 金边微光 */
+.card{
+  background:
+    var(--art-panel) center / cover no-repeat,
+    rgba(12,15,19,.62);
+  background-blend-mode:soft-light;
+  border:1px solid var(--line);
+  box-shadow:inset 0 0 0 1px rgba(217,185,106,.04);
+}
+.card::before{
+  content:"";position:absolute;top:-1px;left:-1px;width:26px;height:26px;pointer-events:none;
+  background:var(--art-corner) 0 0 / 52px 52px no-repeat;
+  opacity:.5;mix-blend-mode:screen;
+}
+.card{position:relative;overflow:hidden}
+/* 底部标签条：水墨氛围 + 金线顶边 */
+#tabs{
+  position:relative;
+  background:
+    var(--art-hero) center bottom / 420px 120px no-repeat,
+    rgba(12,15,19,.94);
+  background-blend-mode:screen;
+  border-top:1px solid var(--line2);
+  box-shadow:0 -2px 16px rgba(0,0,0,.5);
+}
+.tab{text-shadow:0 1px 2px #000;color:var(--txt3)}
+.tab.on{color:var(--gold2);border-top-color:var(--gold);text-shadow:0 0 8px rgba(217,185,106,.6)}
+/* 按钮：金边微光 + 轻纹理 */
+.btn{
+  background:var(--art-panel) center / cover no-repeat, rgba(217,185,106,.07);
+  background-blend-mode:soft-light;
+  border:1px solid var(--line2);
+  box-shadow:0 1px 6px rgba(0,0,0,.4), inset 0 0 0 1px rgba(217,185,106,.06);
+  text-shadow:0 1px 2px #000;
+}
+.btn:active{transform:translateY(1px)}
+/* 模态框：卷轴感背景 + 金角 */
+.modal{
+  position:relative;
+  background:var(--art-panel) center / cover no-repeat, linear-gradient(180deg,#1e242e,#161a21);
+  background-blend-mode:overlay;
+  border:1px solid var(--line2);
+  box-shadow:0 24px 70px rgba(0,0,0,.78);
+}
+.modal::before{
+  content:"";position:absolute;top:-1px;left:-1px;width:40px;height:40px;pointer-events:none;
+  background:var(--art-corner) 0 0 / 80px 80px no-repeat;
+  opacity:.6;mix-blend-mode:screen;
+}
+.modal-h{text-shadow:0 1px 2px #000}
 button{font-family:inherit;font-size:inherit;color:inherit;background:none;border:none;cursor:pointer}
 ::-webkit-scrollbar{width:8px;height:8px}
 ::-webkit-scrollbar-track{background:transparent}
@@ -204,6 +309,146 @@ button{font-family:inherit;font-size:inherit;color:inherit;background:none;borde
 /* 输入框允许文本选择（其余区域仍禁选，避免长按误选） */
 input,textarea{-webkit-user-select:text;user-select:text}
 input,textarea,select{font-size:16px}
+
+/* ============ 2D 美术：角色立绘 / 灵宠立绘 / 地图 / 战斗演出 ============ */
+/* 道侣 / 灵宠卡片：左侧 2D 立绘 */
+.portrait{
+  width:84px;height:84px;flex:0 0 auto;border-radius:6px;overflow:hidden;
+  border:1px solid var(--line2);box-shadow:0 4px 14px rgba(0,0,0,.5);
+  background:linear-gradient(160deg,#10151c,#0b0e12) center/cover no-repeat;
+}
+.portrait.full{width:100%;height:200px;border-radius:4px}
+.portrait img{width:100%;height:100%;object-fit:cover;display:block}
+/* 立绘为 3:4 半身像，横幅容器裁切时优先保住头部 */
+.portrait.full img{object-position:center 14%}
+/* 灵宠立绘为方形，横幅容器居中即可 */
+.pet-row .portrait.full img{object-position:center 42%}
+.lover-row,.pet-row{display:flex;gap:10px;align-items:flex-start}
+.lover-row .body,.pet-row .body{flex:1;min-width:0}
+/* 灵宠缩略立绘 */
+.pet-badge{
+  width:54px;height:54px;border-radius:8px;overflow:hidden;flex:0 0 auto;
+  border:1px solid var(--line2);background:#0b0e12 center/cover no-repeat;
+}
+.pet-badge img{width:100%;height:100%;object-fit:cover;display:block}
+
+/* 历练：2D 可探索地图（节点式大地图） */
+.map-wrap{position:relative;border:1px solid var(--line);border-radius:5px;overflow:hidden;background:#0a0d11}
+.map-canvas{display:flex;flex-wrap:wrap;gap:6px;padding:8px}
+.map-node{
+  position:relative;flex:1 1 30%;min-width:120px;border:1px solid var(--line2);border-radius:5px;
+  overflow:hidden;background:#0c0f14;cursor:pointer;transition:.16s;padding:0;
+}
+.map-node:hover{border-color:var(--gold);transform:translateY(-2px)}
+.map-node.on{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold) inset}
+.map-node.locked{opacity:.45;cursor:not-allowed;filter:grayscale(.7)}
+.map-node .map-img{display:block;height:62px;background:#0b0e12 center/cover no-repeat}
+.map-node .map-img.fallback{background:#0b0e12}
+.map-node .map-cap{display:flex;align-items:center;gap:5px;padding:5px 7px;font-size:12.5px;color:var(--txt)}
+.map-node .map-cap .ic{font-size:14px}
+.map-node .map-cap .lb{margin-left:auto;font-size:11px;color:var(--txt3)}
+.map-node .map-cap .done{color:var(--jade)}
+.map-node .map-tier{position:absolute;top:4px;right:4px;font-size:10px;background:rgba(8,10,13,.8);border:1px solid var(--line2);border-radius:8px;padding:1px 6px;color:var(--gold2)}
+
+/* 战斗演出：分区舞台 + 立绘 + 命中动画 */
+.battle-stage{position:relative}
+.battle-vs{display:flex;align-items:center;justify-content:center;gap:10px;font-size:15px}
+.fighter{position:relative;flex:1;max-width:46%}
+.fighter .av{font-size:30px;line-height:1.1;margin-bottom:2px}
+.fighter .nm{font-size:12.5px;margin:2px 0 4px}
+.fighter .bar{margin-bottom:3px}
+.fighter .hpn{font-size:11px;color:var(--txt3);font-variant-numeric:tabular-nums}
+/* 修士 / 敌人立绘（覆盖 .av 的 emoji） */
+.fighter .portrait-b{
+  width:100%;max-width:120px;height:128px;margin:0 auto 2px;position:relative;
+  background:transparent center/contain no-repeat;display:flex;align-items:flex-end;justify-content:center;
+  transition:transform .12s;
+}
+.fighter .portrait-b img{
+  height:100%;width:auto;object-fit:contain;
+  filter:drop-shadow(0 6px 10px rgba(0,0,0,.55));
+  /* 立绘为不透明深底图，用圆形遮罩让暗底自然融入战场背景 */
+  -webkit-mask-image:radial-gradient(115% 100% at 50% 46%,#000 58%,transparent 100%);
+  mask-image:radial-gradient(115% 100% at 50% 46%,#000 58%,transparent 100%);
+}
+/* 敌人 2D 战斗精灵（放大的 emoji，带投影与呼吸） */
+.sprite-emoji{font-size:56px;line-height:1;display:inline-block;filter:drop-shadow(0 6px 10px rgba(0,0,0,.6));animation:spriteIdle 2.4s ease-in-out infinite}
+.sprite-emoji.boss{font-size:68px;filter:drop-shadow(0 0 10px rgba(192,90,90,.55)) drop-shadow(0 6px 10px rgba(0,0,0,.6))}
+@keyframes spriteIdle{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.locked-art{background:linear-gradient(160deg,#0d1116,#090b0e);position:relative}
+.locked-art::after{content:"？";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:34px;color:var(--txt3)}
+/* 回合命中/受击演出 */
+.fighter.hit .portrait-b{animation:hitShake .34s}
+.fighter.act .portrait-b{animation:lunge .34s}
+@keyframes hitShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
+@keyframes lunge{0%{transform:translateY(0) scale(1)}40%{transform:translateY(-10px) scale(1.06)}100%{transform:translateY(0) scale(1)}}
+.float-dmg{
+  position:absolute;left:50%;top:8px;transform:translateX(-50%);
+  font-size:15px;font-weight:700;color:#ffd76a;text-shadow:0 1px 3px #000;pointer-events:none;
+  animation:floatUp 1s ease-out forwards;z-index:5;
+}
+.float-dmg.foe{color:#ff8a8a}
+@keyframes floatUp{0%{opacity:0;transform:translate(-50%,6px)}15%{opacity:1}100%{opacity:0;transform:translate(-50%,-26px)}}
+/* 战斗舞台背景：当前历练地的氛围图 */
+.battle-bg{
+  position:absolute;inset:0;border-radius:5px;opacity:.26;background-position:center;background-size:cover;
+  pointer-events:none;z-index:0;filter:saturate(.8)
+}
+.battle-vs,.battle-actions{position:relative;z-index:1}
+.battle-actions{margin-top:6px}
+
+/* ===== 2D 可探索场景（俯视）：主角精灵 + 游荡妖兽 + 方向键 ===== */
+.scene-wrap{position:relative}
+.scene{
+  position:relative;width:100%;aspect-ratio:4/3;
+  border:1px solid var(--line2);border-radius:5px;overflow:hidden;
+  background:#0a0d11 center/cover no-repeat;touch-action:none;cursor:crosshair;
+}
+.scene-veil{position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(120% 92% at 50% 58%,rgba(0,0,0,0) 28%,rgba(6,8,11,.74) 100%)}
+.scene-tag{position:absolute;left:6px;top:6px;z-index:4;font-size:11px;padding:1px 7px;border-radius:8px;
+  background:rgba(8,10,13,.78);border:1px solid var(--line2);color:var(--gold2);pointer-events:none}
+.scene-hero{
+  position:absolute;width:38px;height:38px;margin:-19px 0 0 -19px;z-index:3;
+  border-radius:50%;overflow:hidden;border:1px solid var(--gold);
+  box-shadow:0 3px 10px rgba(0,0,0,.7),0 0 0 3px rgba(201,162,75,.14);
+  background:#0b0e12 center/cover no-repeat;pointer-events:none;
+  transition:left .09s linear,top .09s linear;
+}
+.scene-hero img{width:100%;height:100%;object-fit:cover;display:block;object-position:center 10%}
+.scene-foe{
+  position:absolute;z-index:2;transform:translate(-50%,-50%);margin:0;padding:2px 5px;
+  background:rgba(8,10,13,.6);border:1px solid var(--line2);border-radius:4px;
+  font-size:20px;line-height:1;color:var(--txt);cursor:pointer;
+  transition:left .09s linear,top .09s linear;
+}
+.scene-foe .fn{display:block;font-size:9.5px;color:var(--txt3);margin-top:1px;white-space:nowrap}
+.scene-foe.boss{border-color:#8a3b3b;font-size:28px;box-shadow:0 0 10px rgba(192,90,90,.5)}
+.scene-foe.boss .fn{color:#e08a8a}
+.scene-foe.dead{display:none}
+.scene-obs{position:absolute;z-index:2;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:6px;background:rgba(12,16,22,.72);border:1px dashed rgba(201,162,75,.4);font-size:16px;line-height:1;pointer-events:none}
+.scene-obs .on{font-size:9px;color:var(--txt3);margin-top:2px;white-space:nowrap}
+.scene-hint{position:absolute;left:6px;bottom:6px;z-index:4;font-size:10px;padding:2px 7px;border-radius:6px;background:rgba(8,10,13,.75);border:1px solid var(--line2);color:var(--txt3);pointer-events:none}
+.scene-pad{position:absolute;right:8px;bottom:8px;z-index:6;
+  display:grid;grid-template-columns:repeat(3,34px);grid-template-rows:repeat(3,34px);
+  gap:3px;opacity:.92}
+.pd{width:34px;height:34px;padding:0;font-size:13px;border-radius:5px;
+  border:1px solid var(--line2);background:rgba(14,18,24,.9);color:var(--gold2);
+  cursor:pointer;touch-action:none;-webkit-user-select:none;user-select:none}
+.pd:active{background:rgba(201,162,75,.22);border-color:var(--gold)}
+.pd.up{grid-area:1/2}.pd.left{grid-area:2/1}.pd.right{grid-area:2/3}.pd.down{grid-area:3/2}
+.zone-strip{display:flex;gap:5px;overflow-x:auto;padding:7px 0 2px;margin-top:7px;
+  overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch}
+.zone-chip{flex:0 0 auto;font-size:11.5px;padding:4px 9px;border-radius:12px;
+  border:1px solid var(--line2);background:rgba(12,15,20,.85);color:var(--txt2);
+  cursor:pointer;white-space:nowrap}
+.zone-chip.on{border-color:var(--gold);color:var(--gold2);background:rgba(201,162,75,.14)}
+.zone-chip.locked{opacity:.45;cursor:not-allowed}
+@media(max-width:600px){
+  .scene-pad{grid-template-columns:repeat(3,30px);grid-template-rows:repeat(3,30px)}
+  .pd{width:30px;height:30px;font-size:12px}
+  .scene-hero{width:34px;height:34px;margin:-17px 0 0 -17px}
+}
 </style>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
@@ -1089,6 +1334,8 @@ function newState(originId) {
     storyDone: [], storyQueue: [],
     achievements: [], endings: [],
     zone: "qingshi", zoneProgress: 0, bossKilled: {},
+    /* 2D 可探索场景：主角归一化坐标 + 场内游荡的妖兽 */
+    scene: { x: 0.5, y: 0.76 }, sceneFoes: [], _sceneZone: null,
     battle: null, log: [], quests: {},
     time: 0, lastTick: nowSec(), buffs: [],
     speed: 1, autoAdventure: false, autoBreak: false, paused: false,
@@ -1632,6 +1879,11 @@ function sanitize(s) {
   s.mp = clamp(num(s.mp, st.mpMax), 0, st.mpMax);
   s.time = Math.max(0, num(s.time, 0));
   s.realmIdx = clamp(Math.floor(num(s.realmIdx, 0)), 0, MAX_INDEX);
+  /* 2D 可探索场景：主角归一化坐标 + 场内妖兽（旧档缺字段时补默认） */
+  if (!s.scene || typeof s.scene !== "object") s.scene = { x: 0.5, y: 0.76 };
+  s.scene.x = clamp(num(s.scene.x, 0.5), 0.06, 0.94);
+  s.scene.y = clamp(num(s.scene.y, 0.76), 0.10, 0.94);
+  if (!Array.isArray(s.sceneFoes)) s.sceneFoes = [];
   return s;
 }
 /* 修炼推进。
@@ -2115,6 +2367,155 @@ function viewCultivate() {
 const AUTO_SPEEDS = [
   { v: 1, n: "慢" }, { v: 2, n: "标准" }, { v: 4, n: "快" }, { v: 8, n: "极速" }, { v: 20, n: "闪电" }
 ];
+
+/* ---------- 2D 探索场景：障碍、怪物、移动与碰撞 ---------- */
+function getSceneObstacles(zoneId) {
+  const OBSTACLE_THEMES = {
+    qingshi: [{ icon: "🌳", name: "老槐树" }, { icon: "🧱", name: "青石矮墙" }, { icon: "🏘️", name: "旧民舍" }],
+    hou: [{ icon: "🪨", name: "陡峭岩石" }, { icon: "🌲", name: "密林" }, { icon: "⛰️", name: "断崖" }],
+    lin: [{ icon: "🌲", name: "迷雾古木" }, { icon: "🍄", name: "毒蕈群" }, { icon: "🌿", name: "荆棘林" }],
+    zhao: [{ icon: "💧", name: "深寒毒潭" }, { icon: "🪵", name: "枯木桩" }, { icon: "🌫️", name: "迷障沼泽" }],
+    huang: [{ icon: "⚔️", name: "残破古戟" }, { icon: "💀", name: "荒兽巨骸" }, { icon: "🏜️", name: "沙脊" }],
+    yan: [{ icon: "🔥", name: "地心熔岩" }, { icon: "🌋", name: "火灵赤石" }, { icon: "🪨", name: "炽炎石笋" }],
+    bing: [{ icon: "🧊", name: "万载玄冰" }, { icon: "❄️", name: "雪崩残痕" }, { icon: "🏔️", name: "冰封峭壁" }],
+    jiu: [{ icon: "🏮", name: "冥灵引魂幡" }, { icon: "☠️", name: "白骨祭坛" }, { icon: "🪦", name: "古修古冢" }],
+    mo: [{ icon: "😈", name: "天魔蚀柱" }, { icon: "🖤", name: "魔煞石" }, { icon: "🕳️", name: "深渊裂隙" }],
+    jie: [{ icon: "⚡", name: "引雷金柱" }, { icon: "🌩️", name: "劫雷焦石" }, { icon: "🔮", name: "化劫残阵" }]
+  };
+  const theme = OBSTACLE_THEMES[zoneId] || OBSTACLE_THEMES.qingshi;
+  return [
+    { id: "obs1", x: 0.28, y: 0.45, w: 0.16, h: 0.14, icon: theme[0].icon, name: theme[0].name },
+    { id: "obs2", x: 0.72, y: 0.45, w: 0.16, h: 0.14, icon: theme[1].icon, name: theme[1].name },
+    { id: "obs3", x: 0.50, y: 0.20, w: 0.18, h: 0.12, icon: theme[2].icon, name: theme[2].name }
+  ];
+}
+function sceneCanMoveTo(x, y, zoneId) {
+  if (x < 0.08 || x > 0.92 || y < 0.12 || y > 0.90) return false;
+  const obs = getSceneObstacles(zoneId || (G && G.zone) || "qingshi");
+  for (const o of obs) {
+    if (Math.abs(x - o.x) < (o.w / 2 + 0.045) && Math.abs(y - o.y) < (o.h / 2 + 0.045)) {
+      return false;
+    }
+  }
+  return true;
+}
+function initSceneFoes(s, zone) {
+  if (s._sceneZone === zone.id && Array.isArray(s.sceneFoes) && s.sceneFoes.length) {
+    return s.sceneFoes;
+  }
+  s._sceneZone = zone.id;
+  const killed = !!s.bossKilled[zone.id];
+  s.sceneFoes = [
+    { id: "boss", name: zone.boss.n, icon: zone.boss.i, x: 0.50, y: 0.38, isBoss: true, dead: killed },
+    { id: "mob1", name: "游荡妖兽", icon: zone.icon, x: 0.25, y: 0.24, isBoss: false, dead: false },
+    { id: "mob2", name: "潜伏妖兽", icon: "🐾", x: 0.75, y: 0.24, isBoss: false, dead: false }
+  ];
+  return s.sceneFoes;
+}
+function checkSceneEncounter(s) {
+  if (s.battle || !Array.isArray(s.sceneFoes)) return;
+  for (const f of s.sceneFoes) {
+    if (f.dead) continue;
+    const dist = Math.hypot(s.scene.x - f.x, s.scene.y - f.y);
+    if (dist < 0.065) {
+      toast(`⚔️ 遭遇 ${f.name}！`, "y");
+      doAdventure(s, f.isBoss ? "boss" : "field");
+      break;
+    }
+  }
+}
+function updateSceneHeroDOM(s) {
+  try {
+    const el = document.querySelector ? document.querySelector(".scene-hero") : null;
+    if (el && el.style) {
+      el.style.left = (s.scene.x * 100).toFixed(1) + "%";
+      el.style.top = (s.scene.y * 100).toFixed(1) + "%";
+    }
+  } catch (e) { }
+}
+function moveScene(s, dir) {
+  if (!s || !s.scene) return;
+  const STEP = 0.04;
+  let dx = 0, dy = 0;
+  if (dir === "up") dy = -STEP;
+  else if (dir === "down") dy = STEP;
+  else if (dir === "left") dx = -STEP;
+  else if (dir === "right") dx = STEP;
+  if (!dx && !dy) return;
+
+  const curX = s.scene.x, curY = s.scene.y;
+  const targetX = clamp(curX + dx, 0.06, 0.94);
+  const targetY = clamp(curY + dy, 0.10, 0.94);
+
+  if (sceneCanMoveTo(targetX, targetY, s.zone)) {
+    s.scene.x = targetX;
+    s.scene.y = targetY;
+  } else if (dx !== 0 && sceneCanMoveTo(targetX, curY, s.zone)) {
+    s.scene.x = targetX;
+  } else if (dy !== 0 && sceneCanMoveTo(curX, targetY, s.zone)) {
+    s.scene.y = targetY;
+  } else {
+    return;
+  }
+
+  checkSceneEncounter(s);
+  updateSceneHeroDOM(s);
+}
+function sceneHTML(s, zone) {
+  const img = (ART && ART.map && ART.map[zone.id]) ? "assets/" + ART.map[zone.id] : "";
+  const obs = getSceneObstacles(zone.id);
+  const foes = initSceneFoes(s, zone);
+
+  const obsHTML = obs.map(o => `
+    <div class="scene-obs" style="left:${(o.x * 100).toFixed(1)}%;top:${(o.y * 100).toFixed(1)}%;width:${(o.w * 100).toFixed(1)}%;height:${(o.h * 100).toFixed(1)}%">
+      <span>${o.icon}</span>
+      <span class="on">${o.name}</span>
+    </div>
+  `).join("");
+
+  const foesHTML = foes.map(f => {
+    if (f.dead) return "";
+    const isBoss = !!f.isBoss;
+    return `<div class="scene-foe ${isBoss ? "boss" : ""}" style="left:${(f.x * 100).toFixed(1)}%;top:${(f.y * 100).toFixed(1)}%" data-act="adventure" data-mode="${isBoss ? "boss" : "field"}" title="点击与 ${f.name} 交手">
+      ${f.icon}
+      <span class="fn">${f.name}</span>
+    </div>`;
+  }).join("");
+
+  const heroX = (s.scene.x * 100).toFixed(1);
+  const heroY = (s.scene.y * 100).toFixed(1);
+  const realmName = REALMS[clamp(zone.tier, 0, REALMS.length - 1)].name;
+
+  return `
+  <div class="scene-wrap">
+    <div class="scene"${img ? ` style="background-image:url('${img}')"` : ""}>
+      <div class="scene-veil"></div>
+      <div class="scene-tag">${zone.icon} ${zone.name} · ${realmName}境</div>
+      ${obsHTML}
+      ${foesHTML}
+      <div class="scene-hero" style="left:${heroX}%;top:${heroY}%">
+        <img src="assets/player-cultivator.webp" onerror="this.style.display='none'">
+      </div>
+      <div class="scene-pad">
+        <button class="pd up" data-act="sceneMove" data-dir="up">▲</button>
+        <button class="pd left" data-act="sceneMove" data-dir="left">◀</button>
+        <button class="pd right" data-act="sceneMove" data-dir="right">▶</button>
+        <button class="pd down" data-act="sceneMove" data-dir="down">▼</button>
+      </div>
+      <div class="scene-hint">WASD / 方向键移动</div>
+    </div>
+    <div class="zone-strip">
+      ${ZONES.map(z => {
+        const locked = s.realmIdx < majorStart(z.req);
+        const isCur = s.zone === z.id;
+        const killed = !!s.bossKilled[z.id];
+        return `<button class="zone-chip ${isCur ? "on" : ""}${locked ? " locked" : ""}" data-act="setZone" data-id="${z.id}" ${locked ? "disabled" : ""} title="${locked ? "境界不足" : z.name}">
+          ${z.icon} ${z.name}${killed ? " ✔" : ""}
+        </button>`;
+      }).join("")}
+    </div>
+  </div>`;
+}
 function viewAdventure() {
   const s = G, a = s.auto;
   const zone = ZONES.find(z => z.id === s.zone) || ZONES[0];
@@ -2123,6 +2524,34 @@ function viewAdventure() {
   /* 战斗进行中：自动模式显示战况面板，手动模式显示战斗界面 */
   const battlePanel = s.battle ? (a.on ? battleInline() : viewBattle()) : "";
   return `
+  ${battlePanel}
+  <div class="panel">
+    <div class="panel-t">🗺️ 历练之地<span class="sub">点击区域标签切换场景；支持 WASD / 方向键与触屏按键探索</span></div>
+    ${sceneHTML(s, zone)}
+    <div class="hr"></div>
+    <div class="grid g2">
+      <div class="card">
+        <div class="card-t">${zone.icon} ${zone.name}</div>
+        <div class="card-d">${zone.desc}</div>
+        <div class="kv"><span class="k">推荐境界</span><span class="v">${REALMS[clamp(zone.tier, 0, REALMS.length - 1)].name}境</span></div>
+        <div class="kv"><span class="k">掉落倍率</span><span class="v gold">×${zone.drop.toFixed(2)}</span></div>
+        <div class="kv"><span class="k">本地首领</span><span class="v">${zone.boss.i} ${zone.boss.n} ${s.bossKilled[zone.id] ? '<span class="jade">已讨伐</span>' : ""}</span></div>
+      </div>
+      <div class="card">
+        <div class="card-t">🗡️ 我的战力</div>
+        <div class="card-d">
+          攻击 <b>${fmt(st.atk)}</b> · 防御 <b>${fmt(st.def)}</b><br>
+          气血 <b>${fmt(st.hpMax)}</b> · 暴击 <b>${pct(st.crit)}</b> · 闪避 <b>${pct(st.dodge)}</b>
+          ${st.lifesteal > 0 ? `<br>吸血 <b>${pct(st.lifesteal)}</b>` : ""}
+        </div>
+        <div class="card-a">
+          <button class="btn sm" data-act="adventure" data-mode="field">⚔️ 手动打一场</button>
+          <button class="btn sm danger" data-act="adventure" data-mode="boss">👹 手动挑战首领</button>
+        </div>
+        ${zoneLocked ? `<div class="tiny blood" style="margin-top:6px">境界不足，此地凶险。</div>` : ""}
+      </div>
+    </div>
+  </div>
   <div class="panel">
     <div class="panel-t">🤖 全自动历练
       <span class="sub">${a.on ? "运行中" : "已停止"}</span>
@@ -2159,7 +2588,6 @@ function viewAdventure() {
       </div>
     </div>
   </div>
-  ${battlePanel}
   <div class="panel">
     <div class="panel-t">📊 自动战斗统计<span class="sub">本次修行累计</span></div>
     <div class="grid g2">
@@ -2174,38 +2602,6 @@ function viewAdventure() {
         <div class="kv"><span class="k">自动变卖法宝</span><span class="v">${fmt(s.stat.autoSold)} 件</span></div>
         <div class="kv"><span class="k">击杀妖兽</span><span class="v">${fmt(s.stat.kills)}</span></div>
         <div class="kv"><span class="k">本地进度</span><span class="v">${s.zoneProgress} 场</span></div>
-      </div>
-    </div>
-  </div>
-  <div class="panel">
-    <div class="panel-t">🗺️ 历练之地<span class="sub">切换区域后自动战斗将前往新地点</span></div>
-    <div class="scroll-x">
-      ${ZONES.map(z => {
-    const locked = s.realmIdx < majorStart(z.req);
-    return `<button class="chip ${s.zone === z.id ? "on" : ""}" data-act="setZone" data-id="${z.id}" ${locked ? "disabled style='opacity:.4'" : ""}>${z.icon} ${z.name}${s.bossKilled[z.id] ? " ✔" : ""}</button>`;
-  }).join("")}
-    </div>
-    <div class="hr"></div>
-    <div class="grid g2">
-      <div class="card">
-        <div class="card-t">${zone.icon} ${zone.name}</div>
-        <div class="card-d">${zone.desc}</div>
-        <div class="kv"><span class="k">推荐境界</span><span class="v">${REALMS[clamp(zone.tier, 0, REALMS.length - 1)].name}境</span></div>
-        <div class="kv"><span class="k">掉落倍率</span><span class="v gold">×${zone.drop.toFixed(2)}</span></div>
-        <div class="kv"><span class="k">本地首领</span><span class="v">${zone.boss.i} ${zone.boss.n} ${s.bossKilled[zone.id] ? '<span class="jade">已讨伐</span>' : ""}</span></div>
-      </div>
-      <div class="card">
-        <div class="card-t">🗡️ 我的战力</div>
-        <div class="card-d">
-          攻击 <b>${fmt(st.atk)}</b> · 防御 <b>${fmt(st.def)}</b><br>
-          气血 <b>${fmt(st.hpMax)}</b> · 暴击 <b>${pct(st.crit)}</b> · 闪避 <b>${pct(st.dodge)}</b>
-          ${st.lifesteal > 0 ? `<br>吸血 <b>${pct(st.lifesteal)}</b>` : ""}
-        </div>
-        <div class="card-a">
-          <button class="btn sm" data-act="adventure" data-mode="field">⚔️ 手动打一场</button>
-          <button class="btn sm danger" data-act="adventure" data-mode="boss">👹 手动挑战首领</button>
-        </div>
-        ${zoneLocked ? `<div class="tiny blood" style="margin-top:6px">境界不足，此地凶险。</div>` : ""}
       </div>
     </div>
   </div>
@@ -2226,16 +2622,17 @@ function battleInline() {
       <span class="sub">第 ${b.round} 回合 · ${b.kind === "boss" ? "首领战" : "遭遇战"} · ×${s.auto.speed} 速</span>
     </div>
     <div class="battle-stage" style="padding:2px 0 8px">
+      ${battleBgHTML(s)}
       <div class="battle-vs">
         <div class="fighter">
-          <div class="av" style="font-size:26px">🧘</div>
+          <div class="portrait-b"><img src="assets/player-cultivator.webp" onerror="this.parentNode.style.display='none'"></div>
           <div class="nm gold" style="font-size:12px">${s.name}</div>
           <div class="bar hp"><i style="width:${php * 100}%"></i></div>
           <div class="hpn">${fmt(s.hp)} / ${fmt(st.hpMax)}</div>
         </div>
         <div class="tiny">VS</div>
         <div class="fighter">
-          <div class="av" style="font-size:26px">${foe.icon}</div>
+          <div class="portrait-b foe-sprite" style="height:96px">${foeSpriteHTML(foe)}</div>
           <div class="nm blood" style="font-size:12px">${foe.name}</div>
           <div class="bar hp"><i style="width:${fhp * 100}%"></i></div>
           <div class="hpn">${fmt(Math.max(0, foe.hp))} / ${fmt(foe.hpMax)}</div>
@@ -2253,16 +2650,17 @@ function viewBattle() {
   <div class="panel">
     <div class="panel-t">⚔️ 战斗中<span class="sub">第 ${b.round} 回合 · ${b.kind === "boss" ? "首领战" : "遭遇战"}</span></div>
     <div class="battle-stage">
+      ${battleBgHTML(s)}
       <div class="battle-vs">
         <div class="fighter">
-          <div class="av">🧘</div>
+          <div class="portrait-b"><img src="assets/player-cultivator.webp" onerror="this.parentNode.style.display='none'"></div>
           <div class="nm gold">${s.name}</div>
           <div class="bar hp"><i style="width:${php * 100}%"></i></div>
           <div class="hpn">${fmt(s.hp)} / ${fmt(st.hpMax)}</div>
         </div>
         <div class="tiny">VS</div>
         <div class="fighter">
-          <div class="av">${foe.icon}</div>
+          <div class="portrait-b foe-sprite">${foeSpriteHTML(foe)}</div>
           <div class="nm blood">${foe.name}</div>
           <div class="bar hp"><i style="width:${fhp * 100}%"></i></div>
           <div class="hpn">${fmt(Math.max(0, foe.hp))} / ${fmt(foe.hpMax)}</div>
@@ -2487,6 +2885,7 @@ function viewCave() {
     const cost = Math.floor(p.cost * 0.3 * Math.pow(1.45, s.petLv));
     return `<div class="grid g2">
         <div class="card">
+          ${ART.pet[p.id] ? `<div class="portrait full"><img src="assets/${ART.pet[p.id]}" onerror="this.parentNode.style.display='none'"></div>` : ""}
           <div class="card-t">${p.icon} ${p.name} <span class="tag y">Lv.${s.petLv}</span></div>
           <div class="card-d">${p.desc}<br><span class="gold">${p.skill}</span></div>
           <div class="card-a">${effTags(p.stat)}</div>
@@ -2502,6 +2901,7 @@ function viewCave() {
       </div>`;
   })() : `<div class="grid g3">
       ${PETS.map(p => `<div class="card">
+        ${ART.pet[p.id] ? `<div class="portrait full"><img src="assets/${ART.pet[p.id]}" onerror="this.parentNode.style.display='none'"></div>` : ""}
         <div class="card-t">${p.icon} ${p.name}</div>
         <div class="card-d">${p.desc}<br><span class="gold">${p.skill}</span></div>
         <div class="card-a">${effTags(p.stat)}</div>
@@ -2584,7 +2984,9 @@ function viewLovers() {
     const cur = FAV_STAGE.filter(x => fav >= x.v).pop();
     const next = FAV_STAGE.find(x => fav < x.v);
     const isLover = fav >= 200;
+    const art = ART.lover[l.id];
     return `<div class="card ${isLover ? "sel" : ""}">
+          ${art ? `<div class="portrait full${locked ? " locked-art" : ""}">${locked ? "" : `<img src="assets/${art}" onerror="this.parentNode.style.display='none'">`}</div>` : ""}
           <div class="card-t">${l.icon} ${locked ? "？？？" : l.name} <span class="tag ${isLover ? "p" : "y"}">${locked ? "未相遇" : favName(fav)}</span></div>
           <div class="card-d">${locked ? `<span class="tiny">需 ${REALMS[l.meet].name}境方可相遇。</span>` : l.desc}</div>
           ${!locked ? `
@@ -2843,8 +3245,12 @@ document.addEventListener("click", e => {
     case "setZone": {
       const z = ZONES.find(x => x.id === el.dataset.id);
       if (s.realmIdx < majorStart(z.req)) { toast("境界不足，此地凶险。", "r"); return; }
-      s.zone = z.id; s.zoneProgress = 0; break;
+      s.zone = z.id; s.zoneProgress = 0;
+      if (s.scene) { s.scene.x = 0.5; s.scene.y = 0.76; }
+      initSceneFoes(s, z);
+      break;
     }
+    case "sceneMove": moveScene(s, el.dataset.dir); return;
     case "adventure": doAdventure(s, el.dataset.mode); return;
     case "toggleAuto": {
       s.auto.on = !s.auto.on;
@@ -3169,6 +3575,22 @@ document.addEventListener("click", e => {
 document.addEventListener("input", e => {
   if (e.target.id === "nameInput") { G.name = e.target.value.slice(0, 12) || "无名"; renderTop(); }
 });
+/* 2D 探索场景：键盘移动（WASD / 方向键） */
+window.addEventListener("keydown", e => {
+  if (!G || G.tab !== "adventure") return;
+  const ae = document.activeElement;
+  if (ae && (ae.tagName === "INPUT" || ae.tagName === "TEXTAREA")) return;
+  const k = (e.key || "").toLowerCase();
+  let dir = null;
+  if (k === "arrowup" || k === "w") dir = "up";
+  else if (k === "arrowdown" || k === "s") dir = "down";
+  else if (k === "arrowleft" || k === "a") dir = "left";
+  else if (k === "arrowright" || k === "d") dir = "right";
+  if (dir) {
+    e.preventDefault();
+    moveScene(G, dir);
+  }
+});
 /* ============================================================
    九、游戏循环
    ------------------------------------------------------------
@@ -3315,6 +3737,76 @@ function boot() {
   document.addEventListener("visibilitychange", () => { if (document.hidden) save(); });
   setInterval(() => { if (G && !G.battle) { } }, 1000);
 }
+
+/* =========================================================
+   2D 美术层（不改动任何玩法逻辑，仅做展示增强）
+   - 道侣 / 灵宠卡片加 2D 立绘
+   - 历练页改为 2D 可探索大地图
+   - 战斗加分区背景图 + 修士立绘 + 命中演出
+   说明：全部通过渲染模板注入，不依赖 DOM 后处理，
+         图片缺失时 onerror 自动隐藏，绝不影响玩法与存档。
+   ========================================================= */
+const ART = {
+  lover: { shijie: "portrait-shijie.webp", danya: "portrait-danya.webp", huxian: "portrait-huxian.webp", monv: "portrait-monv.webp" },
+  pet: { huo: "pet-huo.webp", xuan: "pet-xuan.webp", lei: "pet-lei.webp", jiu: "pet-jiu.webp", long: "pet-long.webp" },
+  map: {
+    qingshi: "map-qingshi.webp", hou: "map-hou.webp", lin: "map-lin.webp", zhao: "map-zhao.webp",
+    huang: "map-huang.webp", yan: "map-yan.webp", bing: "map-bing.webp", jiu: "map-jiu.webp",
+    mo: "map-mo.webp", jie: "map-jie.webp"
+  }
+};
+/* 战斗舞台背景：当前历练地的氛围图 */
+function battleBgHTML(s) {
+  const z = ZONES.find(x => x.id === (s && s.zone)) || ZONES[0];
+  const img = z && ART.map[z.id];
+  if (!img) return "";
+  return `<div class="battle-bg" style="background-image:url('assets/${img}')"></div>`;
+}
+/* 敌人立绘：以放大的 emoji 作为 2D 战斗精灵（每只妖兽形态各异） */
+function foeSpriteHTML(foe) {
+  const ic = (foe && foe.icon) ? foe.icon : "👹";
+  const boss = foe && foe.isBoss;
+  return `<span class="sprite-emoji${boss ? " boss" : ""}">${ic}</span>`;
+}
+/* 战斗命中演出：按回合给对应一方加动画 + 飘伤害字（纯装饰，失败静默） */
+let _artLastRound = 0;
+function artBattleFx() {
+  try {
+    if (!G || !G.battle) return;
+    const b = G.battle;
+    if (b.round === _artLastRound) return;
+    _artLastRound = b.round;
+    if (!document.querySelectorAll) return;          /* 测试桩 DOM：跳过 */
+    const stage = document.querySelector("#main .battle-stage");
+    if (!stage) return;
+    const fighters = stage.querySelectorAll(".fighter") || [];
+    const me = fighters[0], foe = fighters[1];
+    const entry = b.log[b.log.length - 1] || {};
+    const last = entry.txt || "", cls = entry.cls || "";
+    const meActed = cls === "me" || (/你|灵宠/.test(last) && cls !== "foe");
+    const foeActed = cls === "foe";
+    if (meActed && foe) { foe.classList.add("hit"); setTimeout(() => foe.classList.remove("hit"), 340); }
+    if (foeActed && me) { me.classList.add("hit"); setTimeout(() => me.classList.remove("hit"), 340); }
+    if (meActed && me) { me.classList.add("act"); setTimeout(() => me.classList.remove("act"), 340); }
+    const m = last.match(/造成\s*<b>([\d,]+)<\/b>\s*伤害/);
+    if (m) {
+      const target = foeActed ? me : foe;
+      if (target && target.appendChild) {
+        const d = document.createElement("div");
+        d.className = "float-dmg" + (foeActed ? " foe" : "");
+        d.textContent = "-" + m[1];
+        target.appendChild(d);
+        setTimeout(() => { try { d.remove(); } catch (e) { } }, 1000);
+      }
+    }
+  } catch (e) { /* 演出失败不影响战斗 */ }
+}
+/* 把战斗演出钩进战斗日志（不改变原逻辑，仅在其后追加动画） */
+const _artOrigAddBattleLog = addBattleLog;
+addBattleLog = function (s, txt, cls) {
+  _artOrigAddBattleLog(s, txt, cls);
+  try { setTimeout(artBattleFx, 0); } catch (e) { }
+};
 boot();
 </script>
 </body>
